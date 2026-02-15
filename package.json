@@ -12,6 +12,7 @@
     "dependencies": {
         "@astrojs/react": "^4.2.0",
         "@astrojs/tailwind": "^6.0.0",
+        "@astrojs/vercel": "^9.0.4",
         "astro": "^5.2.0",
         "clsx": "^2.1.0",
         "framer-motion": "^11.0.0",

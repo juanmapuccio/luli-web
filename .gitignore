@@ -34,3 +34,4 @@ Thumbs.db
 .agent/
 .gemini/
 classify_images.py
+.vercel
