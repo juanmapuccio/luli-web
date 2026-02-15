@@ -13,7 +13,7 @@ export default {
       fontFamily: {
         serif: ['"Playfair Display"', "serif"],
         sans: ['"Inter"', "sans-serif"],
-        cursive: ['"Pinyon Script"', "cursive"],
+        cursive: ['"Allura"', "cursive"],
       },
     },
   },

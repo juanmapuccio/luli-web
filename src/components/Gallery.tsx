@@ -1,39 +1,77 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { X, Maximize2 } from 'lucide-react';
 
 export default function Gallery({ images }: { images: string[] }) {
+    const containerRef = useRef<HTMLDivElement>(null);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-    // Filter out potential non-image files if glob picked up something else, though glob pattern is strict
-    // Fallback images
+    // Parallax Logic
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ['start end', 'end start']
+    });
+
+    // Create 3 columns of images
+    const columns = [[], [], []] as string[][];
     const displayImages = images && images.length > 0
         ? images
-        : [1, 2, 3, 4, 5, 6].map(i => `https://placehold.co/600x${400 + (i % 3) * 150}?text=Foto+${i}`);
+        : Array.from({ length: 9 }).map((_, i) => `https://placehold.co/600x${400 + (i % 3) * 150}?text=Foto+${i}`);
+
+    displayImages.forEach((img, i) => {
+        columns[i % 3].push(img);
+    });
+
+    // Differential scrolling speeds (Parallax)
+    const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]); // Column 1: Slow
+    const y2 = useTransform(scrollYProgress, [0, 1], [0, -300]); // Column 2: Fast
+    const y3 = useTransform(scrollYProgress, [0, 1], [0, -150]); // Column 3: Medium
+
+    const yTransforms = [y1, y2, y3];
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
-                {displayImages.map((src, i) => (
+        <div ref={containerRef} className="container mx-auto px-4 py-20 min-h-screen">
+            <div className="flex gap-4 md:gap-8 items-start">
+                {columns.map((col, colIndex) => (
                     <motion.div
-                        key={i}
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: i * 0.05, ease: "easeOut" }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        className="break-inside-avoid relative group overflow-hidden cursor-pointer rounded-sm"
-                        onClick={() => setSelectedImage(src)}
-                        layoutId={`image-${src}-${i}`}
+                        key={colIndex}
+                        style={{ y: yTransforms[colIndex] }}
+                        className="flex-1 flex flex-col gap-8"
                     >
-                        <motion.img
-                            src={src}
-                            alt={`Gallery ${i}`}
-                            className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-                            loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                            <span className="text-white font-light tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100 backdrop-blur-sm px-4 py-2 border border-white/30">Ver</span>
-                        </div>
+                        {col.map((src, imgIndex) => {
+                            // Calculate global index for unique keys and hover logic
+                            // Logic matches the distribution: colIndex + (imgIndex * 3)
+                            const absoluteIndex = colIndex + (imgIndex * 3);
+                            const isHovered = hoveredIndex === absoluteIndex;
+                            const isDimmed = hoveredIndex !== null && !isHovered;
+
+                            return (
+                                <motion.div
+                                    key={src}
+                                    className="relative group cursor-pointer"
+                                    layoutId={`gallery-item-${src}`}
+                                    onClick={() => setSelectedImage(src)}
+                                    onMouseEnter={() => setHoveredIndex(absoluteIndex)}
+                                    onMouseLeave={() => setHoveredIndex(null)}
+                                    animate={{
+                                        opacity: isDimmed ? 0.3 : 1,
+                                        scale: isHovered ? 1.02 : 1,
+                                        filter: isDimmed ? 'grayscale(100%) blur(1px)' : 'grayscale(0%) blur(0px)'
+                                    }}
+                                    transition={{ duration: 0.4 }}
+                                >
+                                    <motion.img
+                                        src={src}
+                                        alt="Gallery Item"
+                                        className="w-full h-auto object-cover rounded-sm shadow-md"
+                                        loading="lazy"
+                                    />
+                                    {/* Minimalist Overlay */}
+                                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                </motion.div>
+                            );
+                        })}
                     </motion.div>
                 ))}
             </div>
@@ -45,21 +83,20 @@ export default function Gallery({ images }: { images: string[] }) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4"
+                        className="fixed inset-0 z-[60] bg-stone-900/95 backdrop-blur-md flex items-center justify-center p-4"
                         onClick={() => setSelectedImage(null)}
                     >
                         <button
-                            className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors"
+                            className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors"
                             onClick={() => setSelectedImage(null)}
                         >
-                            <X size={32} />
+                            <X size={44} strokeWidth={1} />
                         </button>
 
                         <motion.img
                             src={selectedImage}
-                            alt="Selected"
-                            className="max-w-full max-h-[90vh] object-contain shadow-2xl"
-                            layoutId={`image-${selectedImage}-${displayImages.indexOf(selectedImage)}`} // Try to match ID if possible, roughly
+                            layoutId={`gallery-item-${selectedImage}`}
+                            className="max-w-full max-h-[90vh] object-contain shadow-2xl rounded-sm"
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         />
                     </motion.div>

@@ -2,16 +2,16 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
 interface TextRevealProps {
-    children: string;
+    text: string;
     className?: string;
     delay?: number;
 }
 
-export default function TextReveal({ children, className = "", delay = 0 }: TextRevealProps) {
+export default function TextReveal({ text, className = "", delay = 0 }: TextRevealProps) {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-10%" });
 
-    const words = children.split(" ");
+    const words = text.split(" ");
 
     const container = {
         hidden: { opacity: 0 },

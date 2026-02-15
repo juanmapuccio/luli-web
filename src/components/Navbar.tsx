@@ -21,8 +21,8 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center transition-all duration-300">
                     <div className="flex-shrink-0 flex items-center">
-                        <a href="/" className={`font-cursive text-3xl tracking-widest transition-colors duration-300 ${isScrolled || isOpen ? 'text-stone-800' : 'text-white'}`}>
-                            LUCIA PUCCIO
+                        <a href="/" className={`font-cursive text-4xl tracking-normal transition-colors duration-300 ${isScrolled || isOpen ? 'text-stone-800' : 'text-white'}`}>
+                            Lucia Puccio
                         </a>
                     </div>
                     <div className="hidden md:flex space-x-12">
