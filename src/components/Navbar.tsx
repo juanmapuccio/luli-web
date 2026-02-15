@@ -26,10 +26,10 @@ export default function Navbar() {
                         </a>
                     </div>
                     <div className="hidden md:flex space-x-12">
-                        {['Portfolio', 'Sobre Mí', 'Contacto'].map((item, i) => (
+                        {['Galería', 'Sobre Mí', 'Contacto'].map((item, i) => (
                             <a
                                 key={item}
-                                href={item === "Portfolio" ? "/" : item === "Sobre Mí" ? "/about" : "/contact"}
+                                href={item === "Galería" ? "/" : item === "Sobre Mí" ? "/about" : "/contact"}
                                 className={`transition-colors duration-300 font-light text-sm tracking-widest uppercase relative group ${isScrolled || isOpen ? 'text-stone-500 hover:text-stone-900' : 'text-white/80 hover:text-white'}`}
                             >
                                 {item}
@@ -58,7 +58,7 @@ export default function Navbar() {
                     className="md:hidden bg-white border-b border-stone-100 overflow-hidden"
                 >
                     <div className="px-4 py-6 space-y-4 flex flex-col items-center">
-                        <a href="/" className="px-3 py-2 text-stone-600 hover:text-stone-900 font-light text-sm uppercase tracking-widest">Portfolio</a>
+                        <a href="/" className="px-3 py-2 text-stone-600 hover:text-stone-900 font-light text-sm uppercase tracking-widest">Galería</a>
                         <a href="/about" className="px-3 py-2 text-stone-600 hover:text-stone-900 font-light text-sm uppercase tracking-widest">Sobre Mí</a>
                         <a href="/contact" className="px-3 py-2 text-stone-600 hover:text-stone-900 font-light text-sm uppercase tracking-widest">Contacto</a>
                     </div>
