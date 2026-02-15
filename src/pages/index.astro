@@ -1,0 +1,53 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar";
+import Gallery from "../components/Gallery";
+import Footer from "../components/Footer.astro";
+import Hero from "../components/Hero.astro";
+import { getImage } from "astro:assets";
+
+// Import all images from nature-img folder
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "../images/nature-img/*.{jpeg,jpg,png,gif,webp}",
+  { eager: true },
+);
+
+// Process images to get optimized URLs
+const optimizedImages = await Promise.all(
+  Object.values(images).map(async (image) => {
+    const optimized = await getImage({
+      src: image.default,
+      width: 800,
+      quality: "mid",
+      format: "webp",
+    });
+    return optimized.src;
+  }),
+);
+---
+
+<Layout title="Lucia Puccio | Fotografía">
+  <Navbar client:only="react" />
+
+  <main class="min-h-screen bg-stone-50">
+    <Hero />
+
+    <!-- Gallery Section -->
+    <section class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 mb-12 text-center">
+        <h2 class="text-3xl font-serif text-stone-800 mb-4">Portafolio</h2>
+        <div class="w-20 h-1 bg-sky-900/20 mx-auto"></div>
+      </div>
+      <Gallery client:only="react" images={optimizedImages} />
+      {
+        optimizedImages.length === 0 && (
+          <p class="text-center text-stone-500">
+            No se encontraron imágenes en la carpeta nature-img :(
+          </p>
+        )
+      }
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

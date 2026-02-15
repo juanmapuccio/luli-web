@@ -1,0 +1,34 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer.astro";
+import TextReveal from "../components/TextReveal";
+---
+
+<Layout title="Sobre Mí | Lucia Puccio">
+  <Navbar client:only="react" />
+  <main class="min-h-screen bg-stone-50 pt-32 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h1 class="text-4xl font-serif text-stone-800 mb-8">Sobre Mí</h1>
+      <div
+        class="text-lg font-light text-stone-600 leading-relaxed mb-6 flex justify-center"
+      >
+        <TextReveal client:only="react" delay={0.2} className="justify-center">
+          Hola, soy Lucia. Me apasiona capturar momentos honestos y la belleza
+          en lo cotidiano. Mi estilo es relajado, buscando siempre la luz
+          natural y las conexiones genuinas.
+        </TextReveal>
+      </div>
+      <div
+        class="w-full h-96 bg-stone-200 rounded-lg mb-8 overflow-hidden relative"
+      >
+        <img
+          src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2670&auto=format&fit=crop"
+          alt="Profile"
+          class="w-full h-full object-cover opacity-80"
+        />
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
