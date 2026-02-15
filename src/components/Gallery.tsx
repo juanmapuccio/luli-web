@@ -1,104 +1,151 @@
-import { useState, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { X, Maximize2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Gallery({ images }: { images: string[] }) {
-    const containerRef = useRef<HTMLDivElement>(null);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const [mounted, setMounted] = useState(false);
 
-    // Parallax Logic
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ['start end', 'end start']
-    });
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
-    // Create 3 columns of images
-    const columns = [[], [], []] as string[][];
+    // Placeholder images if none provided
     const displayImages = images && images.length > 0
         ? images
         : Array.from({ length: 9 }).map((_, i) => `https://placehold.co/600x${400 + (i % 3) * 150}?text=Foto+${i}`);
 
-    displayImages.forEach((img, i) => {
-        columns[i % 3].push(img);
-    });
+    const handleNext = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!selectedImage) return;
+        const currentIndex = displayImages.indexOf(selectedImage);
+        const nextIndex = (currentIndex + 1) % displayImages.length;
+        setSelectedImage(displayImages[nextIndex]);
+    };
 
-    // Differential scrolling speeds (Parallax)
-    const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]); // Column 1: Slow
-    const y2 = useTransform(scrollYProgress, [0, 1], [0, -300]); // Column 2: Fast
-    const y3 = useTransform(scrollYProgress, [0, 1], [0, -150]); // Column 3: Medium
+    const handlePrev = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!selectedImage) return;
+        const currentIndex = displayImages.indexOf(selectedImage);
+        const prevIndex = (currentIndex - 1 + displayImages.length) % displayImages.length;
+        setSelectedImage(displayImages[prevIndex]);
+    };
 
-    const yTransforms = [y1, y2, y3];
+    // Handle keyboard navigation
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!selectedImage) return;
+            if (e.key === 'ArrowRight') {
+                const currentIndex = displayImages.indexOf(selectedImage);
+                const nextIndex = (currentIndex + 1) % displayImages.length;
+                setSelectedImage(displayImages[nextIndex]);
+            }
+            if (e.key === 'ArrowLeft') {
+                const currentIndex = displayImages.indexOf(selectedImage);
+                const prevIndex = (currentIndex - 1 + displayImages.length) % displayImages.length;
+                setSelectedImage(displayImages[prevIndex]);
+            }
+            if (e.key === 'Escape') setSelectedImage(null);
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [selectedImage, displayImages]);
+
+    if (!mounted) return null;
 
     return (
-        <div ref={containerRef} className="container mx-auto px-4 py-20 min-h-screen">
-            <div className="flex gap-4 md:gap-8 items-start">
-                {columns.map((col, colIndex) => (
+        <div className="container mx-auto px-4 min-h-screen">
+            {/* Strict Grid for Perfect Alignment */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+                {displayImages.map((src, index) => (
                     <motion.div
-                        key={colIndex}
-                        style={{ y: yTransforms[colIndex] }}
-                        className="flex-1 flex flex-col gap-8"
+                        key={`gallery-item-container-${src}`}
+                        className="relative group cursor-pointer overflow-hidden rounded-sm aspect-[3/4]"
+                        onClick={() => setSelectedImage(src)}
+                        onMouseEnter={() => setHoveredIndex(index)}
+                        onMouseLeave={() => setHoveredIndex(null)}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-50px" }}
+                        transition={{ duration: 0.6, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
                     >
-                        {col.map((src, imgIndex) => {
-                            // Calculate global index for unique keys and hover logic
-                            // Logic matches the distribution: colIndex + (imgIndex * 3)
-                            const absoluteIndex = colIndex + (imgIndex * 3);
-                            const isHovered = hoveredIndex === absoluteIndex;
-                            const isDimmed = hoveredIndex !== null && !isHovered;
-
-                            return (
-                                <motion.div
-                                    key={src}
-                                    className="relative group cursor-pointer"
-                                    layoutId={`gallery-item-${src}`}
-                                    onClick={() => setSelectedImage(src)}
-                                    onMouseEnter={() => setHoveredIndex(absoluteIndex)}
-                                    onMouseLeave={() => setHoveredIndex(null)}
-                                    animate={{
-                                        opacity: isDimmed ? 0.3 : 1,
-                                        scale: isHovered ? 1.02 : 1,
-                                        filter: isDimmed ? 'grayscale(100%) blur(1px)' : 'grayscale(0%) blur(0px)'
-                                    }}
-                                    transition={{ duration: 0.4 }}
-                                >
-                                    <motion.img
-                                        src={src}
-                                        alt="Gallery Item"
-                                        className="w-full h-auto object-cover rounded-sm shadow-md"
-                                        loading="lazy"
-                                    />
-                                    {/* Minimalist Overlay */}
-                                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                </motion.div>
-                            );
-                        })}
+                        <motion.img
+                            layoutId={`image-${src}`} // layoutId on the IMAGE itself
+                            src={src}
+                            alt={`Gallery Item ${index + 1}`}
+                            className={`w-full h-full object-cover transition-all duration-700 ease-in-out will-change-transform
+                                ${hoveredIndex !== null && hoveredIndex !== index ? 'grayscale opacity-50 scale-95' : 'grayscale-0 opacity-100 scale-100'}
+                                group-hover:scale-110
+                            `}
+                            loading="lazy"
+                        />
+                        {/* Hover Overlay - No layoutId needed */}
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 pointer-events-none" />
                     </motion.div>
                 ))}
             </div>
 
-            {/* Lightbox */}
+            {/* Fluid Lightbox */}
             <AnimatePresence>
                 {selectedImage && (
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[60] bg-stone-900/95 backdrop-blur-md flex items-center justify-center p-4"
+                        initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                        animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
+                        exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                        className="fixed inset-0 z-[100] bg-stone-900/90 flex items-center justify-center p-4"
                         onClick={() => setSelectedImage(null)}
                     >
-                        <button
-                            className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors"
-                            onClick={() => setSelectedImage(null)}
-                        >
-                            <X size={44} strokeWidth={1} />
-                        </button>
+                        {/* Controls Container */}
+                        <div className="absolute inset-0 z-20 pointer-events-none sticky-controls">
+                            <button
+                                className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors pointer-events-auto"
+                                onClick={() => setSelectedImage(null)}
+                            >
+                                <X size={40} strokeWidth={1} />
+                            </button>
 
-                        <motion.img
-                            src={selectedImage}
-                            layoutId={`gallery-item-${selectedImage}`}
-                            className="max-w-full max-h-[90vh] object-contain shadow-2xl rounded-sm"
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        />
+                            <button
+                                className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors pointer-events-auto p-4 hidden md:block"
+                                onClick={handlePrev}
+                            >
+                                <ChevronLeft size={48} strokeWidth={1} />
+                            </button>
+                            <button
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors pointer-events-auto p-4 hidden md:block"
+                                onClick={handleNext}
+                            >
+                                <ChevronRight size={48} strokeWidth={1} />
+                            </button>
+                        </div>
+
+
+                        {/* Main Image with Shared Layout Transition */}
+                        <div className="relative max-w-7xl w-full h-full flex items-center justify-center pointer-events-none">
+                            <motion.img
+                                layoutId={`image-${selectedImage}`} // Matching layoutId
+                                src={selectedImage}
+                                className="w-auto h-auto max-w-full max-h-[90vh] object-contain shadow-2xl rounded-sm pointer-events-auto cursor-default"
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 30,
+                                    mass: 0.8
+                                }}
+                            />
+                        </div>
+
+                        {/* Counter */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            className="absolute bottom-8 left-0 w-full text-center text-stone-400 font-light tracking-widest text-xs uppercase z-20"
+                        >
+                            {displayImages.indexOf(selectedImage) + 1} / {displayImages.length}
+                        </motion.div>
+
                     </motion.div>
                 )}
             </AnimatePresence>

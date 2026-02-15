@@ -1,0 +1,63 @@
+export const languages = {
+    es: "Español",
+    en: "English",
+    ca: "Català",
+    it: "Italiano",
+};
+
+export const defaultLang = "es";
+
+export const ui = {
+    es: {
+        "nav.gallery": "Galería",
+        "nav.about": "Sobre Mí",
+        "nav.contact": "Contacto",
+        "hero.subtitle": "Fotografía & Arte",
+        "gallery.title": "Mi Galería",
+        "gallery.empty": "No se encontraron imágenes en la carpeta nature-img :(",
+        "about.title": "Sobre Mí",
+        "about.p1": "Hola, soy Lucía. Llevo más de una década deteniendo el tiempo a través de mi lente.",
+        "about.p2": "Mi viaje me ha llevado por el mundo, buscando siempre esa conexión invisible entre el arte, la naturaleza imperceptible y la esencia humana.",
+        "about.quote": "No solo capturo imágenes; narro historias silenciosas donde la luz y la emoción se encuentran.",
+        "footer.rights": "Todos los derechos reservados.",
+    },
+    en: {
+        "nav.gallery": "Gallery",
+        "nav.about": "About Me",
+        "nav.contact": "Contact",
+        "hero.subtitle": "Photography & Art",
+        "gallery.title": "My Gallery",
+        "gallery.empty": "No images found in nature-img folder :(",
+        "about.title": "About Me",
+        "about.p1": "Hi, I'm Lucia. I've been stopping time through my lens for over a decade.",
+        "about.p2": "My journey has taken me around the world, always seeking that invisible connection between art, imperceptible nature, and human essence.",
+        "about.quote": "I don't just capture images; I narrate silent stories where light and emotion meet.",
+        "footer.rights": "All rights reserved.",
+    },
+    ca: {
+        "nav.gallery": "Galeria",
+        "nav.about": "Sobre Mi",
+        "nav.contact": "Contacte",
+        "hero.subtitle": "Fotografia i Art",
+        "gallery.title": "La Meva Galeria",
+        "gallery.empty": "No s'han trobat imatges a la carpeta nature-img :(",
+        "about.title": "Sobre Mi",
+        "about.p1": "Hola, sóc la Lucía. Porto més d'una dècada aturant el temps a través del meu objectiu.",
+        "about.p2": "El meu viatge m'ha portat pel món, buscant sempre aquesta connexió invisible entre l'art, la natura imperceptible i l'essència humana.",
+        "about.quote": "No només capturo imatges; narro històries silencioses on la llum i l'emoció es troben.",
+        "footer.rights": "Tots els drets reservats.",
+    },
+    it: {
+        "nav.gallery": "Galleria",
+        "nav.about": "Su di Me",
+        "nav.contact": "Contatto",
+        "hero.subtitle": "Fotografia e Arte",
+        "gallery.title": "La Mia Galleria",
+        "gallery.empty": "Nessuna immagine trovata nella cartella nature-img :(",
+        "about.title": "Su di Me",
+        "about.p1": "Ciao, sono Lucia. Fermo il tempo attraverso il mio obiettivo da oltre un decennio.",
+        "about.p2": "Il mio viaggio mi ha portato in giro per il mondo, cercando sempre quella connessione invisibile tra arte, natura impercettibile ed essenza umana.",
+        "about.quote": "Non catturo solo immagini; racconto storie silenziose dove luce ed emozione si incontrano.",
+        "footer.rights": "Tutti i diritti riservati.",
+    },
+} as const;

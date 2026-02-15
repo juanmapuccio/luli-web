@@ -8,4 +8,11 @@ import vercel from "@astrojs/vercel";
 export default defineConfig({
   integrations: [react(), tailwind()],
   adapter: vercel(),
+  i18n: {
+    defaultLocale: "es",
+    locales: ["es", "en", "ca", "it"],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
 });

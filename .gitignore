@@ -31,7 +31,13 @@ Thumbs.db
 *.swo
 
 # Agent/AI
-.agent/
-.gemini/
-classify_images.py
-.vercel
+
+
+# Large Media Files (Originals)
+public/videos/AboutWaves.mp4
+public/videos/FooterWaves.mp4
+public/videos/HeroWaves.mp4
+public/videos/*.webm
+
+# Ensure optimized videos are tracked
+!public/videos/optimizated-videos/

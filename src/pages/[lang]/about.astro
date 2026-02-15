@@ -1,0 +1,97 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import TextReveal from "../../components/TextReveal";
+import { Image } from "astro:assets";
+import profileImage from "../../images/profile-img/luciapuccioprofile.jpeg";
+import { useTranslations } from "../../i18n/utils";
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: "en" } },
+    { params: { lang: "ca" } },
+    { params: { lang: "it" } },
+  ];
+}
+
+const { lang } = Astro.params;
+const t = useTranslations(lang as any);
+---
+
+<Layout title={`${t("about.title")} | Lucia Puccio`}>
+  <Navbar client:only="react" lang={lang as any} />
+
+  <main class="min-h-screen bg-[#FDFBF7] pt-32 pb-20 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Text Content -->
+        <div class="lg:col-span-12 lg:mb-12 text-center lg:text-left">
+          <h1
+            class="font-cursive text-6xl md:text-7xl text-stone-800 leading-tight"
+          >
+            <TextReveal text="Lucia" delay={0.2} client:load />
+            <span class="block ml-12">
+              <TextReveal text="Puccio" delay={0.4} client:load />
+            </span>
+          </h1>
+        </div>
+
+        <!-- Image Section (Organic Shape) -->
+        <div class="lg:col-span-5 relative group order-last lg:order-first">
+          <!-- ... SVG Mask and Image Logic ... -->
+          <div
+            class="absolute inset-0 bg-[#E8E4D9] rounded-[40%_60%_70%_30%/40%_50%_60%_50%] transform rotate-3 scale-105 opacity-60 mix-blend-multiply transition-transform duration-700 group-hover:rotate-6 group-hover:scale-110"
+          >
+          </div>
+          <div
+            class="relative w-full aspect-[3/4] overflow-hidden rounded-[60%_40%_30%_70%/60%_30%_70%_40%] shadow-2xl transition-all duration-700 group-hover:rounded-[50%_50%_40%_60%/50%_40%_60%_50%]"
+          >
+            <Image
+              src={profileImage}
+              alt="Lucia Puccio Portrait"
+              class="w-full h-full object-cover grayscale brightness-110 contrast-100 transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105"
+              quality="mid"
+            />
+            <div
+              class="absolute inset-0 bg-noise opacity-20 pointer-events-none"
+            >
+            </div>
+          </div>
+        </div>
+
+        <!-- Bio Content -->
+        <div class="lg:col-span-7 space-y-8 pl-0 lg:pl-12">
+          <div
+            class="space-y-6 text-lg text-stone-600 font-light leading-relaxed"
+          >
+            <p
+              class="first-letter:text-4xl first-letter:font-cursive first-letter:mr-2 first-letter:text-stone-800"
+            >
+              {t("about.p1")}
+            </p>
+            <p>
+              {t("about.p2")}
+            </p>
+            <div class="w-16 h-[1px] bg-stone-300 my-8"></div>
+            <p class="font-serif italic text-2xl text-stone-500">
+              "{t("about.quote")}"
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Background Elements -->
+    <div
+      class="absolute top-20 right-0 w-96 h-96 bg-purple-100/30 rounded-full blur-3xl -z-10 animate-float-delaye"
+    >
+    </div>
+    <div
+      class="absolute bottom-10 left-10 w-64 h-64 bg-yellow-100/20 rounded-full blur-3xl -z-10 animate-float"
+    >
+    </div>
+  </main>
+
+  <Footer client:visible lang={lang as any} />
+</Layout>

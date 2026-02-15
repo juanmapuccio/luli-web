@@ -1,0 +1,65 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar";
+import Gallery from "../../components/Gallery";
+import Footer from "../../components/Footer";
+import Hero from "../../components/Hero.astro";
+import { getImage } from "astro:assets";
+import { useTranslations } from "../../i18n/utils";
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: "en" } },
+    { params: { lang: "ca" } },
+    { params: { lang: "it" } },
+  ];
+}
+
+const { lang } = Astro.params;
+const t = useTranslations(lang as any);
+
+// Import all images from nature-img folder
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "../../images/nature-img/*.{jpeg,jpg,png,gif,webp}",
+  { eager: true },
+);
+
+// Process images to get optimized URLs
+const optimizedImages = await Promise.all(
+  Object.values(images).map(async (image) => {
+    const optimized = await getImage({
+      src: image.default,
+      width: 1200,
+      quality: 90,
+      format: "webp",
+    });
+    return optimized.src;
+  }),
+);
+---
+
+<Layout title="Lucia Puccio | Fotografía" lang={lang as any}>
+  <Navbar client:only="react" lang={lang as any} />
+
+  <main class="min-h-screen bg-stone-50">
+    <Hero lang={lang as any} />
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="pt-20 pb-40 bg-white">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-serif text-stone-800 mb-4">
+          {t("gallery.title")}
+        </h2>
+        <div class="w-20 h-1 bg-sky-900/20 mx-auto"></div>
+      </div>
+      <Gallery client:only="react" images={optimizedImages} />
+      {
+        optimizedImages.length === 0 && (
+          <p class="text-center text-stone-500">{t("gallery.empty")}</p>
+        )
+      }
+    </section>
+  </main>
+
+  <Footer client:visible lang={lang as any} />
+</Layout>
