@@ -31,6 +31,8 @@ Thumbs.db
 *.swo
 
 # Agent/AI
+.agent/
+Scripts/
 
 
 # Large Media Files (Originals)
