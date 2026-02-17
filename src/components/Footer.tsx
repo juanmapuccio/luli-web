@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { FaWhatsapp, FaInstagram } from 'react-icons/fa';
-import { Mail } from 'lucide-react';
+import { Mail, MapPin } from 'lucide-react';
 import { ui } from '../i18n/ui';
 import { isContactModalOpen } from '../store/modalStore';
 
@@ -61,13 +61,13 @@ export default function Footer({ lang = 'es' }: FooterProps) {
                     >
                         <span className="relative z-10">Lucia Puccio</span>
                     </h2>
-                    <p className="font-light text-stone-600 text-xs md:text-sm tracking-[0.2em] uppercase max-w-lg mx-auto leading-relaxed">
+                    <p className="font-serif italic text-stone-600 text-base md:text-lg tracking-[0.05em] max-w-lg mx-auto leading-relaxed opacity-90">
                         {t["about.quote"]}
                     </p>
                 </motion.div>
 
                 {/* Minimalist Divider */}
-                <div className="w-24 h-px bg-stone-400 opacity-50"></div>
+                <div className="w-20 h-px bg-stone-300 opacity-40"></div>
 
                 {/* Contact & Socials - Clean Row */}
                 <div className="flex items-center justify-center space-x-12 w-full">
@@ -103,10 +103,15 @@ export default function Footer({ lang = 'es' }: FooterProps) {
 
 
                 {/* Bottom Bar - Absolute Center */}
-                <div className="pt-8 w-full flex flex-col md:flex-row justify-center items-center text-[11px] text-stone-500 font-medium uppercase tracking-widest space-y-4 md:space-y-0 md:space-x-8">
+                <div className="pt-8 w-full flex flex-col md:flex-row justify-center items-center text-[12px] text-stone-400 font-normal uppercase tracking-[0.15em] space-y-4 md:space-y-0 md:space-x-8">
                     <p>&copy; {new Date().getFullYear()} Lucia Puccio.</p>
-                    <span className="hidden md:inline text-stone-300">•</span>
+                    <span className="hidden md:inline text-stone-200">•</span>
                     <p>{t["footer.rights"]}</p>
+                    <span className="hidden md:inline text-stone-200">•</span>
+                    <div className="flex items-center space-x-1.5">
+                        <MapPin size={10} className="text-stone-300" />
+                        <p>{t["footer.location"]}</p>
+                    </div>
 
                     {/* Minimal Go to Top */}
                     <button
