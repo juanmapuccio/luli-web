@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { FaWhatsapp, FaInstagram } from 'react-icons/fa';
+import { Mail } from 'lucide-react';
 import { ui } from '../i18n/ui';
+import { isContactModalOpen } from '../store/modalStore';
 
 interface FooterProps {
     lang?: keyof typeof ui;
@@ -25,118 +27,97 @@ export default function Footer({ lang = 'es' }: FooterProps) {
     ];
 
     return (
-        <footer id="contact" className="bg-[#1a1a1a] text-stone-200 py-20 relative overflow-hidden">
-            {/* Video Background */}
+        <footer id="contact" className="bg-[#e7e5e4]/90 text-stone-700 py-20 relative overflow-hidden">
+            {/* Video Background - Soft Light for Coastal Feel */}
             <video
-                className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
+                className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply pointer-events-none grayscale-0"
                 autoPlay
                 muted
                 loop
                 playsInline
             >
-                <source src="/videos/optimizated-videos/FooterWaves.mp4" type="video/mp4" />
+                <source src="/videos/optimized-videos/FooterWaves.mp4" type="video/mp4" />
             </video>
 
-            {/* Organic Shapes/Noise Background */}
-            <div className="absolute inset-0 opacity-5 bg-noise pointer-events-none"></div>
-            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-stone-700 to-transparent"></div>
+            {/* Gradient Mask for Smooth Transition */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#d6d3d1]/30 pointer-events-none" />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-12 text-center md:text-left">
+            {/* Noise Texture */}
+            <div className="absolute inset-0 opacity-30 bg-noise pointer-events-none mix-blend-soft-light"></div>
 
-                    {/* Brand Section */}
-                    <div className="md:col-span-5 space-y-6">
-                        <h2 className="font-cursive text-5xl md:text-6xl text-stone-100 tracking-wide">
-                            Lucia Puccio
-                        </h2>
-                        <p className="font-light text-stone-400 text-sm leading-relaxed max-w-sm mx-auto md:mx-0">
-                            {t["about.quote"]}
-                        </p>
-                    </div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center space-y-10">
 
-                    {/* Navigation/Divider - Optional in minimal footer, sticking to socials focus */}
-                    <div className="md:col-span-2 hidden md:block">
-                        <div className="w-px h-full bg-stone-800 mx-auto"></div>
-                    </div>
+                {/* Brand Section - Huge Editorial Typography */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8 }}
+                    className="space-y-6"
+                >
+                    <h2
+                        className="font-cursive text-7xl md:text-9xl text-white/10 tracking-normal leading-none relative"
+                        style={{ textShadow: "0 0 2px rgba(68, 64, 60, 0.6), 0 0 15px rgba(68, 64, 60, 0.2)" }}
+                    >
+                        <span className="relative z-10">Lucia Puccio</span>
+                    </h2>
+                    <p className="font-light text-stone-600 text-xs md:text-sm tracking-[0.2em] uppercase max-w-lg mx-auto leading-relaxed">
+                        {t["about.quote"]}
+                    </p>
+                </motion.div>
 
-                    {/* Socials & Contact */}
-                    <div className="md:col-span-5 flex flex-col items-center md:items-end justify-center space-y-8">
-                        <div className="flex space-x-8">
-                            {socialLinks.map((social) => (
-                                <motion.a
-                                    key={social.name}
-                                    href={social.href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`text-stone-400 transition-all duration-300 transform hover:scale-110 ${social.color}`}
-                                    whileHover={{ y: -5 }}
-                                    whileTap={{ scale: 0.95 }}
-                                >
-                                    <social.icon size={32} />
-                                    <span className="sr-only">{social.name}</span>
-                                </motion.a>
-                            ))}
-                        </div>
-                        <div className="text-center md:text-right">
-                            <p className="text-xs text-stone-500 font-light tracking-widest uppercase mb-2">
-                                Contact Directo
-                            </p>
-                            <a href="https://wa.me/34672189761" className="text-lg font-serif text-stone-300 hover:text-white transition-colors">
-                                +34 672 18 97 61
-                            </a>
-                        </div>
-                    </div>
+                {/* Minimalist Divider */}
+                <div className="w-24 h-px bg-stone-400 opacity-50"></div>
+
+                {/* Contact & Socials - Clean Row */}
+                <div className="flex items-center justify-center space-x-12 w-full">
+
+                    {/* Email Icon Trigger */}
+                    <motion.button
+                        onClick={() => isContactModalOpen.set(true)}
+                        className="p-4 bg-white/40 rounded-full backdrop-blur-sm border border-white/40 shadow-sm hover:shadow-md text-stone-600 transition-all duration-300 transform hover:scale-110 hover:text-stone-900"
+                        whileHover={{ y: -5 }}
+                        whileTap={{ scale: 0.95 }}
+                        aria-label="Send Email"
+                    >
+                        <Mail size={32} />
+                    </motion.button>
+
+                    {/* Social Icons */}
+                    {socialLinks.map((social) => (
+                        <motion.a
+                            key={social.name}
+                            href={social.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-stone-600 transition-all duration-300 transform hover:scale-110 hover:text-stone-900 ${social.color} p-4 bg-white/40 rounded-full backdrop-blur-sm border border-white/40 shadow-sm hover:shadow-md`}
+                            whileHover={{ y: -5 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            <social.icon size={32} />
+                            <span className="sr-only">{social.name}</span>
+                        </motion.a>
+                    ))}
                 </div>
 
-                {/* Bottom Bar */}
-                <div className="mt-16 pt-8 border-t border-stone-800 flex flex-col md:flex-row justify-between items-center text-xs text-stone-600 font-light uppercase tracking-widest relative">
-                    <p>&copy; {new Date().getFullYear()} Lucia Puccio.</p>
 
-                    {/* Go to Top Button - Centered or absolute positioned */}
+
+                {/* Bottom Bar - Absolute Center */}
+                <div className="pt-8 w-full flex flex-col md:flex-row justify-center items-center text-[11px] text-stone-500 font-medium uppercase tracking-widest space-y-4 md:space-y-0 md:space-x-8">
+                    <p>&copy; {new Date().getFullYear()} Lucia Puccio.</p>
+                    <span className="hidden md:inline text-stone-300">•</span>
+                    <p>{t["footer.rights"]}</p>
+
+                    {/* Minimal Go to Top */}
                     <button
                         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                        aria-label="Scroll to top"
-                        className="
-                            my-4 md:my-0 px-4 py-3
-                            border border-stone-700 rounded-full 
-                            text-stone-400 hover:text-white 
-                            hover:border-teal-500/50 hover:bg-stone-800/80
-                            transition-all duration-500 
-                            flex flex-col items-center justify-center group
-                            md:absolute md:left-1/2 md:-translate-x-1/2
-                            shadow-[0_0_10px_rgba(20,184,166,0.05)] 
-                            hover:shadow-[0_0_25px_rgba(20,184,166,0.4)]
-                        "
+                        className="fixed bottom-8 right-8 p-3 bg-white/50 backdrop-blur-md rounded-full shadow-lg border border-white/40 text-stone-500 hover:text-stone-900 transition-all duration-500 hover:-translate-y-1 z-50 group"
+                        aria-label="Back to Top"
                     >
-                        <div className="flex flex-col items-center -space-y-2">
-                            {[0, 1, 2].map((i) => (
-                                <svg
-                                    key={i}
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="14"
-                                    height="14"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className={`
-                                        transform transition-all duration-500 
-                                        group-hover:-translate-y-1
-                                        ${i === 0 ? 'opacity-40 group-hover:opacity-100' : ''}
-                                        ${i === 1 ? 'opacity-70 group-hover:opacity-100' : ''}
-                                        ${i === 2 ? 'opacity-100' : ''}
-                                    `}
-                                    style={{ transitionDelay: `${i * 100}ms` }}
-                                >
-                                    <path d="m18 15-6-6-6 6" />
-                                </svg>
-                            ))}
-                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="m18 15-6-6-6 6" />
+                        </svg>
                     </button>
-
-                    <p className="mt-2 md:mt-0">{t["footer.rights"]}</p>
                 </div>
             </div>
         </footer>

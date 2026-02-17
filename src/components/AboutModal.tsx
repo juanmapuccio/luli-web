@@ -1,6 +1,7 @@
 import { useStore } from '@nanostores/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Palmtree, Shell, Anchor, Fish } from 'lucide-react'; // Palmtree, Shell, Anchor, Fish from Lucide
+import { GiWhaleTail, GiCoral, GiCrab, GiDolphin, GiAmmonite, GiSeaStar, GiJellyfish } from 'react-icons/gi'; // Marine icons separate import
 import { isAboutModalOpen } from '../store/modalStore';
 import { ui } from '../i18n/ui';
 import profileImage from '../images/profile-img/luciapuccioprofile.jpeg';
@@ -32,104 +33,118 @@ export default function AboutModal({ lang = 'es' }: AboutModalProps) {
     return (
         <AnimatePresence>
             {$isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    {/* Backdrop with Blur */}
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+                    {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-stone-900/40 backdrop-blur-sm"
+                        className="absolute inset-0 bg-stone-900/30 backdrop-blur-md"
                         onClick={() => isAboutModalOpen.set(false)}
                     />
 
                     {/* Modal Content */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 30 }}
-                        transition={{ type: "spring", duration: 0.6, bounce: 0.3 }}
-                        className="relative w-full max-w-5xl h-auto max-h-[85vh] bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl overflow-hidden border border-white/60 flex flex-col md:flex-row"
+                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                        className="relative w-full max-w-5xl h-auto max-h-[90vh] bg-[#fafaf9] rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row"
                     >
-                        {/* Close Button */}
+                        {/* Close Button - Sticky/Absolute */}
                         <button
                             onClick={() => isAboutModalOpen.set(false)}
-                            className="absolute top-4 right-4 z-50 p-2 text-stone-500 hover:text-stone-900 transition-colors bg-white/50 rounded-full hover:bg-white shadow-sm"
+                            className="absolute top-4 right-4 z-50 p-2 text-stone-400 hover:text-stone-800 transition-colors bg-white/60 backdrop-blur-sm rounded-full hover:bg-white shadow-sm"
                         >
-                            <X size={24} />
+                            <X size={20} />
                         </button>
 
                         {/* Image Section (Left) */}
-                        <div className="w-full md:w-5/12 h-64 md:h-auto relative overflow-hidden group bg-stone-100">
-                            {/* Video Background */}
-                            <video
-                                key="about-video"
-                                className="absolute inset-0 w-full h-full object-cover opacity-60"
-                                autoPlay
-                                muted
-                                loop
-                                playsInline
-                            >
-                                <source src="/videos/optimizated-videos/AboutWaves.mp4" type="video/mp4" />
-                            </video>
+                        <div className="w-full md:w-5/12 h-64 md:h-auto relative overflow-hidden bg-stone-200">
 
-                            {/* Profile Image Overlay */}
+
                             <motion.img
                                 src={profileImage.src}
                                 alt="Lucia Puccio"
-                                className="relative z-10 w-full h-full object-cover mix-blend-multiply opacity-80 transition-all duration-1000 group-hover:scale-105 group-hover:opacity-100"
-                                initial={{ filter: "grayscale(100%)" }}
-                                whileHover={{ filter: "grayscale(0%)" }}
+                                className="relative z-10 w-full h-full object-cover saturate-[0.65] contrast-[0.85] brightness-[1.15] sepia-[0.1] opacity-95 transition-transform duration-1000 md:hover:scale-105"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-stone-900/40 via-transparent to-transparent z-20" />
+                            {/* Gradient Overlay for text readability on mobile if needed, or just style */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-stone-900/10 to-transparent pointer-events-none" />
                         </div>
 
                         {/* Content Section (Right) */}
-                        <div className="w-full md:w-7/12 p-8 md:p-12 flex flex-col relative bg-gradient-to-br from-white/50 to-stone-50/50">
+                        <div className="w-full md:w-7/12 flex flex-col relative bg-white overflow-hidden">
 
-                            {/* Decorative Wave Top (Subtle) */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
-                            <div className="relative z-10 flex flex-col h-full">
-                                <h2 className="font-cursive text-5xl md:text-6xl text-stone-800 mb-2">
-                                    {content['about.title']}
-                                </h2>
-                                <p className="text-stone-400 font-light uppercase tracking-widest text-sm mb-8">
-                                    {content['hero.subtitle']}
-                                </p>
+                            {/* Decorative Background Elements & Icons */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-coastal-blue-pale/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none mix-blend-multiply" />
+                            <div className="absolute bottom-0 left-0 w-48 h-48 bg-coastal-sand/30 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2 pointer-events-none mix-blend-multiply" />
 
-                                <div className="space-y-6 text-stone-600 font-light leading-relaxed overflow-y-auto pr-4 custom-scrollbar flex-grow">
-                                    <p className="text-lg">
-                                        {/* Fallback text if translation key is missing, or structure it nicely */}
-                                        "Capturar la esencia de un momento es detener el tiempo para siempre."
+                            {/* Marine Icons - Subtle Decorations */}
+                            <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.07] text-stone-800">
+                                {/* Top Area */}
+                                <Palmtree className="absolute top-6 left-8 text-7xl transform -rotate-12 opacity-60" />
+                                <GiWhaleTail className="absolute top-8 right-10 text-6xl transform rotate-6" />
+                                <Anchor className="absolute top-16 right-1/3 text-4xl transform rotate-12 opacity-50" />
+
+                                {/* Middle Area */}
+                                <GiSeaStar className="absolute top-1/3 left-6 text-4xl transform rotate-45" />
+                                <GiDolphin className="absolute top-[40%] right-4 text-5xl transform -rotate-12" />
+                                <Shell className="absolute top-[60%] left-10 text-5xl transform -rotate-12" />
+
+                                {/* Bottom Area */}
+                                <GiCrab className="absolute bottom-10 left-8 text-5xl transform rotate-12" />
+                                <GiAmmonite className="absolute bottom-24 left-1/3 text-6xl transform -rotate-12 opacity-70" />
+                                <Fish className="absolute bottom-12 right-1/3 text-4xl transform rotate-180 opacity-60" />
+                                <GiJellyfish className="absolute bottom-32 right-6 text-5xl transform rotate-6" />
+                                <GiCoral className="absolute bottom-6 right-8 text-7xl transform -rotate-6" />
+                            </div>
+
+                            <div className="relative z-10 flex flex-col h-full p-8 md:p-12 overflow-hidden">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.2 }}
+                                >
+                                    <h2 className="font-serif text-4xl md:text-5xl text-stone-800 mb-2 tracking-tight">
+                                        {content['about.title']}
+                                    </h2>
+                                    <div className="w-12 h-[1px] bg-stone-300 mb-6"></div>
+                                </motion.div>
+
+                                {/* Scrollable Text Area */}
+                                <div className="space-y-6 text-stone-600 font-light leading-loose overflow-y-auto pr-2 custom-scrollbar flex-grow">
+                                    <p className="text-lg text-stone-800 font-serif italic opacity-80">
+                                        "{content['about.quote']}"
                                     </p>
                                     <p>
-                                        Hola, soy Lucía. Mi pasión por la fotografía nace de la necesidad de guardar instantes que las palabras no alcanzan a describir.
+                                        {content['about.p1']}
                                     </p>
                                     <p>
-                                        Me especializo en retratos naturales y paisajes emotivos, buscando siempre esa luz que hace único a cada sujeto.
+                                        {content['about.p2']}
                                     </p>
+
+
                                 </div>
 
-                                {/* Social / Contact Mini-Footer inside Modal */}
-                                <div className="mt-8 pt-6 border-t border-stone-200 flex justify-between items-center">
-                                    <a href="#contact" onClick={() => isAboutModalOpen.set(false)} className="text-stone-800 hover:text-teal-600 transition-colors font-medium text-sm uppercase tracking-wider">
-                                        {content['nav.contact']}
-                                    </a>
-                                    <span className="text-stone-300 transform rotate-12 font-cursive text-2xl">Luli</span>
+                                {/* Footer Action */}
+                                <div className="mt-6 pt-4 border-t border-stone-100 flex justify-between items-center">
+                                    <button
+                                        onClick={() => {
+                                            isAboutModalOpen.set(false);
+                                            // Optional: Open contact modal
+                                            // isContactModalOpen.set(true); // If imported
+                                        }}
+                                        className="text-xs font-bold uppercase tracking-widest text-stone-400 hover:text-stone-800 transition-colors"
+                                    >
+                                        Close
+                                    </button>
+
+                                    <span className="font-cursive text-2xl text-stone-400 transform -rotate-2">
+                                        Lucia Puccio
+                                    </span>
                                 </div>
                             </div>
-                        </div>
-
-                        {/* Animated Wave Bottom */}
-                        <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none text-teal-500/10 z-0">
-                            <svg viewBox="0 0 1440 100" className="w-full h-full" preserveAspectRatio="none">
-                                <motion.path
-                                    fill="currentColor"
-                                    d="M0,60 C150,60 150,30 300,30 C450,30 450,60 600,60 C750,60 750,30 900,30 C1050,30 1050,60 1200,60 C1350,60 1350,30 1500,30 L1500,100 L0,100 Z"
-                                    variants={waveVariants}
-                                    animate="animate"
-                                />
-                            </svg>
                         </div>
                     </motion.div>
                 </div>

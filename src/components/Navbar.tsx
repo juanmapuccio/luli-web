@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion';
-import { Menu, X, Globe, ChevronDown } from 'lucide-react';
+import { Menu, X, Globe, ChevronDown, Camera, Aperture, User, Mail } from 'lucide-react';
 import { languages, ui, defaultLang } from '../i18n/ui';
-import { isAboutModalOpen } from '../store/modalStore';
+import { isAboutModalOpen, isContactModalOpen } from '../store/modalStore';
+import AudioControl from './AudioControl';
+import ContactModal from './ContactModal';
 
 interface NavbarProps {
     lang?: keyof typeof ui;
@@ -11,17 +13,14 @@ interface NavbarProps {
 export default function Navbar({ lang = 'es' }: NavbarProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isLangOpen, setIsLangOpen] = useState(false);
-    const [headerVisible, setHeaderVisible] = useState(true);
+    const [isCompact, setIsCompact] = useState(false);
     const { scrollY } = useScroll();
     const langMenuRef = useRef<HTMLDivElement>(null);
-    const lastScrollY = useRef(0);
 
     const t = ui[lang];
 
     useMotionValueEvent(scrollY, "change", (latest) => {
-        const isScrollingDown = latest > lastScrollY.current && latest > 50;
-        setHeaderVisible(!isScrollingDown);
-        lastScrollY.current = latest;
+        setIsCompact(latest > 50);
     });
 
     // Close language menu on click outside
@@ -75,7 +74,27 @@ export default function Navbar({ lang = 'es' }: NavbarProps) {
 
             if (isHomePage) {
                 e.preventDefault();
-                const element = document.getElementById('gallery');
+                // Target the content wrapper inside the section, not the section itself
+                // because the section has massive top padding
+                const element = document.getElementById('gallery-title-container');
+                if (element) {
+                    // Scroll to center the title or slightly above
+                    // Using offset to account for Navbar
+                    const y = element.getBoundingClientRect().top + window.scrollY - 100;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                    setIsOpen(false);
+                }
+            }
+        }
+
+        if (key === 'nav.contact') {
+            const isHomePage = window.location.pathname === '/' ||
+                window.location.pathname === `/${lang}` ||
+                window.location.pathname === `/${lang}/`;
+
+            if (isHomePage) {
+                e.preventDefault();
+                const element = document.getElementById('contact');
                 if (element) {
                     element.scrollIntoView({ behavior: 'smooth' });
                     setIsOpen(false);
@@ -84,10 +103,11 @@ export default function Navbar({ lang = 'es' }: NavbarProps) {
         }
     };
 
+    // Updated Icons for a more aesthetic/minimal look
     const navLinks = [
-        { key: 'nav.gallery', href: '/#gallery' },
-        { key: 'nav.about', href: '/about' },
-        { key: 'nav.contact', href: '#contact' }
+        { key: 'nav.gallery', href: '/#gallery', icon: Aperture },
+        { key: 'nav.about', href: '/about', icon: User },
+        { key: 'nav.contact', href: '#contact', icon: Mail }
     ];
 
     // Helper to get localized href
@@ -98,122 +118,182 @@ export default function Navbar({ lang = 'es' }: NavbarProps) {
     };
 
     return (
-        <motion.nav
-            initial={{ y: 0 }}
-            animate={{ y: headerVisible ? 0 : -100 }}
-            transition={{ duration: 0.3 }}
-            className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4"
-        >
-            <div className={`
-                w-full max-w-5xl mx-auto
-                bg-white/70 backdrop-blur-xl border border-white/40 shadow-lg shadow-black/5
-                rounded-2xl px-6 py-3
-                flex justify-between items-center transition-all duration-300
-            `}>
-                <div className="flex-shrink-0 flex items-center">
-                    <a href={getLocalizedHref('/')} className="font-cursive text-3xl md:text-4xl tracking-normal text-stone-800 hover:text-stone-600 transition-colors">
-                        Lucia Puccio
-                    </a>
-                </div>
+        <>
+            <motion.nav
+                initial={{ y: 0 }}
+                animate={{ y: 0 }} // Always visible
+                className={`fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none`}
+            >
+                <motion.div
+                    layout
+                    transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                    className={`
+                        pointer-events-auto
+                        w-full mx-auto
+                        ${/* Using inline classes for easier Framer Motion layout handling */ ''}
+                        flex justify-between items-center
+                        ${isCompact
+                            ? 'max-w-fit bg-white/70 backdrop-blur-xl border border-stone-300/40 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.12)] rounded-full px-4 py-2 gap-6'
+                            : 'max-w-5xl bg-coastal-white/90 backdrop-blur-2xl border border-stone-300/40 shadow-[0_15px_50px_-10px_rgba(0,0,0,0.15)] rounded-2xl px-6 py-3'}
+                    `}
+                >
+                    <motion.div layout="position" className="flex-shrink-0 flex items-center">
+                        <a href={getLocalizedHref('/')} className="text-coastal-stone-deep hover:text-stone-600 transition-colors" aria-label="Lucia Puccio Home">
+                            <Camera
+                                size={isCompact ? 20 : 32}
+                                strokeWidth={isCompact ? 1.25 : 1.5}
+                                className={`transition-all duration-500 ${isCompact ? 'text-stone-800' : ''}`}
+                            />
+                        </a>
+                    </motion.div>
 
-                <div className="hidden md:flex items-center space-x-8">
-                    {/* Desktop Menu */}
-                    <div className="flex space-x-8">
-                        {navLinks.map((item) => (
-                            <a
-                                key={item.key}
-                                href={getLocalizedHref(item.href)}
-                                onClick={(e) => handleLinkClick(e, item.key, item.href)}
-                                className="transition-colors duration-300 font-light text-sm tracking-widest uppercase relative group text-stone-600 hover:text-stone-900"
-                            >
-                                {t[item.key as keyof typeof t]}
-                                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-stone-900 transition-all duration-300 group-hover:w-full"></span>
-                            </a>
-                        ))}
-                    </div>
-
-                    {/* Language Switcher Desktop */}
-                    <div className="relative" ref={langMenuRef}>
-                        <button
-                            onClick={() => setIsLangOpen(!isLangOpen)}
-                            className="flex items-center space-x-1 text-sm font-light uppercase tracking-widest transition-colors duration-300 text-stone-600 hover:text-stone-900"
-                        >
-                            <Globe size={16} />
-                            <span>{lang.toUpperCase()}</span>
-                            <ChevronDown size={14} className={`transition-transform duration-300 ${isLangOpen ? 'rotate-180' : ''}`} />
-                        </button>
-
-                        <AnimatePresence>
-                            {isLangOpen && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                    className="absolute right-0 mt-2 w-32 bg-white/90 backdrop-blur-md rounded-xl shadow-xl py-2 border border-stone-100 overflow-hidden"
-                                >
-                                    {Object.entries(languages).map(([code, name]) => (
-                                        <button
-                                            key={code}
-                                            onClick={() => switchLanguage(code)}
-                                            className={`block w-full text-left px-4 py-2 text-sm text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition-colors ${lang === code ? 'bg-stone-50/50 font-medium text-stone-900' : ''}`}
-                                        >
-                                            {name}
-                                        </button>
-                                    ))}
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-                </div>
-
-                <div className="md:hidden flex items-center space-x-4">
-                    {/* Language Switcher Mobile (Simple Toggle) */}
-                    <button
-                        onClick={() => {
-                            const langs = Object.keys(languages);
-                            const currentIndex = langs.indexOf(lang);
-                            const nextLang = langs[(currentIndex + 1) % langs.length];
-                            switchLanguage(nextLang);
-                        }}
-                        className="p-2 transition-colors duration-300 text-stone-600 hover:text-stone-900"
-                    >
-                        <span className="font-light text-sm uppercase">{lang}</span>
-                    </button>
-
-                    <button
-                        onClick={() => setIsOpen(!isOpen)}
-                        className="p-2 transition-colors duration-300 text-stone-600 hover:text-stone-900"
-                        aria-label="Menu"
-                    >
-                        {isOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
-                </div>
-            </div>
-
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                        className="absolute top-20 left-4 right-4 md:hidden bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl rounded-2xl overflow-hidden"
-                    >
-                        <div className="px-4 py-6 space-y-4 flex flex-col items-center">
+                    <motion.div layout="position" className="hidden md:flex items-center">
+                        {/* Desktop Menu */}
+                        <motion.div layout="position" className={`flex items-center ${isCompact ? 'space-x-4 ml-4' : 'space-x-8 mr-8'}`}>
                             {navLinks.map((item) => (
                                 <a
                                     key={item.key}
                                     href={getLocalizedHref(item.href)}
                                     onClick={(e) => handleLinkClick(e, item.key, item.href)}
-                                    className="px-3 py-2 text-stone-600 hover:text-stone-900 font-light text-sm uppercase tracking-widest w-full text-center hover:bg-stone-50/50 rounded-lg transition-colors"
+                                    className="relative group text-stone-600 hover:text-stone-900 cursor-pointer flex items-center justify-center p-1"
+                                    title={t[item.key as keyof typeof t]} // Tooltip for icons
                                 >
-                                    {t[item.key as keyof typeof t]}
+                                    <AnimatePresence mode="wait">
+                                        {!isCompact ? (
+                                            <motion.span
+                                                key="text"
+                                                initial={{ opacity: 0, scale: 0.9 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.1 } }}
+                                                className="font-light text-xs tracking-[0.25em] uppercase relative block"
+                                            >
+                                                {t[item.key as keyof typeof t]}
+                                                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-stone-900 transition-all duration-300 group-hover:w-full"></span>
+                                            </motion.span>
+                                        ) : (
+                                            <motion.div
+                                                key="icon"
+                                                initial={{ opacity: 0, scale: 0.5 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.1 } }}
+                                            >
+                                                <item.icon
+                                                    size={20}
+                                                    strokeWidth={1.25} // Ultra-thin aesthetic
+                                                />
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </a>
                             ))}
-                        </div>
+                        </motion.div>
+
+                        {/* Audio Control */}
+                        <motion.div layout="position" className={`${isCompact ? 'ml-2' : ''}`}>
+                            <AudioControl />
+                        </motion.div>
+
+                        {/* Language Switcher Desktop */}
+                        <motion.div layout="position" className={`relative ${isCompact ? 'ml-2' : 'ml-8'}`} ref={langMenuRef}>
+                            <motion.button
+                                layout="position"
+                                onClick={() => setIsLangOpen(!isLangOpen)}
+                                className="flex items-center space-x-1 text-sm font-light uppercase tracking-widest transition-colors duration-300 text-stone-600 hover:text-stone-900"
+                            >
+                                <Globe size={isCompact ? 16 : 16} strokeWidth={isCompact ? 1.25 : 1.5} />
+                                <AnimatePresence>
+                                    {!isCompact && (
+                                        <motion.span
+                                            key="lang-text"
+                                            initial={{ opacity: 0, width: 0 }}
+                                            animate={{ opacity: 1, width: 'auto' }}
+                                            exit={{ opacity: 0, width: 0 }}
+                                            className="ml-1 overflow-hidden whitespace-nowrap"
+                                        >
+                                            {lang.toUpperCase()}
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                                {!isCompact && <ChevronDown size={14} className={`transition-transform duration-300 ${isLangOpen ? 'rotate-180' : ''}`} />}
+                            </motion.button>
+
+                            <AnimatePresence>
+                                {isLangOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        className="absolute right-0 mt-2 w-32 bg-white/90 backdrop-blur-md rounded-xl shadow-xl py-2 border border-stone-100 overflow-hidden text-left"
+                                        style={{ position: 'absolute' }} // Ensure it stays absolute
+                                    >
+                                        {Object.entries(languages).map(([code, name]) => (
+                                            <button
+                                                key={code}
+                                                onClick={() => switchLanguage(code)}
+                                                className={`block w-full text-left px-4 py-2 text-sm text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition-colors ${lang === code ? 'bg-stone-50/50 font-medium text-stone-900' : ''}`}
+                                            >
+                                                {name}
+                                            </button>
+                                        ))}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </motion.div>
                     </motion.div>
-                )}
-            </AnimatePresence>
-        </motion.nav>
+
+                    <div className="md:hidden flex items-center space-x-2">
+                        <AudioControl />
+
+                        {/* Language Switcher Mobile (Simple Toggle) */}
+                        <button
+                            onClick={() => {
+                                const langs = Object.keys(languages);
+                                const currentIndex = langs.indexOf(lang);
+                                const nextLang = langs[(currentIndex + 1) % langs.length];
+                                switchLanguage(nextLang);
+                            }}
+                            className="p-2 transition-colors duration-300 text-stone-600 hover:text-stone-900"
+                        >
+                            <span className="font-light text-sm uppercase">{lang}</span>
+                        </button>
+
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="p-2 transition-colors duration-300 text-stone-600 hover:text-stone-900"
+                            aria-label="Menu"
+                        >
+                            {isOpen ? <X size={24} /> : <Menu size={24} />}
+                        </button>
+                    </div>
+                </motion.div>
+
+                {/* Mobile Menu */}
+                <AnimatePresence>
+                    {isOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                            className="absolute top-20 left-4 right-4 md:hidden bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl rounded-2xl overflow-hidden pointer-events-auto"
+                        >
+                            <div className="px-4 py-6 space-y-4 flex flex-col items-center">
+                                {navLinks.map((item) => (
+                                    <a
+                                        key={item.key}
+                                        href={getLocalizedHref(item.href)}
+                                        onClick={(e) => handleLinkClick(e, item.key, item.href)}
+                                        className="px-3 py-2 text-stone-600 hover:text-stone-900 font-light text-sm uppercase tracking-widest w-full text-center hover:bg-stone-50/50 rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2"
+                                    >
+                                        <item.icon size={18} />
+                                        <span>{t[item.key as keyof typeof t]}</span>
+                                    </a>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </motion.nav>
+            <ContactModal lang={lang} />
+        </>
     );
 }

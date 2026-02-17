@@ -4,9 +4,11 @@ import tailwind from "@astrojs/tailwind";
 
 import vercel from "@astrojs/vercel";
 
+import sitemap from "@astrojs/sitemap";
+
 // https://astro.build/config
 export default defineConfig({
-  integrations: [react(), tailwind()],
+  integrations: [react(), tailwind(), sitemap()],
   adapter: vercel(),
   i18n: {
     defaultLocale: "es",
@@ -15,4 +17,5 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
+  site: "https://luli-web.vercel.app",
 });

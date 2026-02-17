@@ -1,6 +1,31 @@
+/* Local Fonts via @fontsource */
+@import '@fontsource/inter';
+@import '@fontsource/playfair-display';
+@import '@fontsource/allura';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --sand-bone: #f5f5f4;
+  --sand-warm: #e7e5e4;
+  --sand-depth: #d6d3d1;
+  --fossil-stone: #a8a29e;
+  --ocean-foam: #f0f9ff;
+}
+
+@layer utilities {
+  .glass-ice {
+    @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-sm;
+  }
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  .text-shadow-md {
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+}
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {

@@ -56,35 +56,56 @@ export default function Gallery({ images }: { images: string[] }) {
     if (!mounted) return null;
 
     return (
-        <div className="container mx-auto px-4 min-h-screen">
-            {/* Strict Grid for Perfect Alignment */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-                {displayImages.map((src, index) => (
-                    <motion.div
-                        key={`gallery-item-container-${src}`}
-                        className="relative group cursor-pointer overflow-hidden rounded-sm aspect-[3/4]"
-                        onClick={() => setSelectedImage(src)}
-                        onMouseEnter={() => setHoveredIndex(index)}
-                        onMouseLeave={() => setHoveredIndex(null)}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 0.6, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                        <motion.img
-                            layoutId={`image-${src}`} // layoutId on the IMAGE itself
-                            src={src}
-                            alt={`Gallery Item ${index + 1}`}
-                            className={`w-full h-full object-cover transition-all duration-700 ease-in-out will-change-transform
-                                ${hoveredIndex !== null && hoveredIndex !== index ? 'grayscale opacity-50 scale-95' : 'grayscale-0 opacity-100 scale-100'}
-                                group-hover:scale-110
-                            `}
-                            loading="lazy"
-                        />
-                        {/* Hover Overlay - No layoutId needed */}
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 pointer-events-none" />
-                    </motion.div>
-                ))}
+        <div className="container mx-auto px-4 min-h-screen pb-20" id="gallery">
+            {/* Editorial Mosaic Layout - Bento Grid Style */}
+            <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[300px] gap-6">
+                {displayImages.map((src, index) => {
+                    // Editorial Pattern for 3-column grid
+                    // Loop every 9 items
+                    const i = index % 9;
+                    let spanClass = "col-span-1 row-span-1"; // Default
+
+                    if (i === 0) spanClass = "md:col-span-2 md:row-span-2"; // Big Feature
+                    else if (i === 6) spanClass = "md:row-span-2"; // Tall Portrait
+                    else if (i === 7 || i === 8) spanClass = "md:col-span-2"; // Wide Landscape
+
+                    return (
+                        <motion.div
+                            key={`gallery-item-container-${src}`}
+                            className={`relative group cursor-pointer ${spanClass}`}
+                            onClick={() => setSelectedImage(src)}
+                            onMouseEnter={() => setHoveredIndex(index)}
+                            onMouseLeave={() => setHoveredIndex(null)}
+                            initial={{ opacity: 0, y: 100, scale: 0.9, filter: "blur(10px)" }}
+                            whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                            viewport={{ once: false, amount: 0.1 }}
+                            transition={{
+                                duration: 1.2,
+                                ease: [0.16, 1, 0.3, 1],
+                                delay: (index % 3) * 0.1
+                            }}
+                        >
+                            <div className="overflow-hidden rounded-sm relative w-full h-full transform transition-all duration-700 hover:shadow-2xl hover:shadow-coastal-blue-deep/10">
+                                {/* Water Lens Effect Container */}
+                                <motion.img
+                                    src={src}
+                                    alt={`Gallery Item ${index + 1}`}
+                                    className={`w-full h-full object-cover transition-all duration-700 ease-out will-change-transform
+                                        ${hoveredIndex !== null && hoveredIndex !== index ? 'grayscale opacity-60 blur-[1px]' : 'grayscale-0 opacity-100'}
+                                        group-hover:scale-105
+                                    `}
+                                    loading="lazy"
+                                />
+
+                                {/* Water Lens Overlay */}
+                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-coastal-blue-deep/20 via-transparent to-white/20 mix-blend-overlay" />
+                                    <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-coastal-blue-pale/30 to-transparent blur-xl" />
+                                </div>
+                            </div>
+                        </motion.div>
+                    );
+                })}
             </div>
 
             {/* Fluid Lightbox */}
@@ -94,26 +115,26 @@ export default function Gallery({ images }: { images: string[] }) {
                         initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
                         animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
                         exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-                        className="fixed inset-0 z-[100] bg-stone-900/90 flex items-center justify-center p-4"
+                        className="fixed inset-0 z-[100] bg-coastal-white/95 flex items-center justify-center p-4 backdrop-blur-md"
                         onClick={() => setSelectedImage(null)}
                     >
                         {/* Controls Container */}
                         <div className="absolute inset-0 z-20 pointer-events-none sticky-controls">
                             <button
-                                className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors pointer-events-auto"
+                                className="absolute top-6 right-6 text-stone-400 hover:text-stone-900 transition-colors pointer-events-auto"
                                 onClick={() => setSelectedImage(null)}
                             >
                                 <X size={40} strokeWidth={1} />
                             </button>
 
                             <button
-                                className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors pointer-events-auto p-4 hidden md:block"
+                                className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-900 transition-colors pointer-events-auto p-4 hidden md:block"
                                 onClick={handlePrev}
                             >
                                 <ChevronLeft size={48} strokeWidth={1} />
                             </button>
                             <button
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors pointer-events-auto p-4 hidden md:block"
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-900 transition-colors pointer-events-auto p-4 hidden md:block"
                                 onClick={handleNext}
                             >
                                 <ChevronRight size={48} strokeWidth={1} />
@@ -124,14 +145,15 @@ export default function Gallery({ images }: { images: string[] }) {
                         {/* Main Image with Shared Layout Transition */}
                         <div className="relative max-w-7xl w-full h-full flex items-center justify-center pointer-events-none">
                             <motion.img
-                                layoutId={`image-${selectedImage}`} // Matching layoutId
+                                key={selectedImage}
                                 src={selectedImage}
                                 className="w-auto h-auto max-w-full max-h-[90vh] object-contain shadow-2xl rounded-sm pointer-events-auto cursor-default"
+                                initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)", y: 20 }}
+                                animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, filter: "blur(5px)", y: -20 }}
                                 transition={{
-                                    type: "spring",
-                                    stiffness: 300,
-                                    damping: 30,
-                                    mass: 0.8
+                                    duration: 0.6,
+                                    ease: [0.16, 1, 0.3, 1], // Expert curve: smooth out
                                 }}
                             />
                         </div>

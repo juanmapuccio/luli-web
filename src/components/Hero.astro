@@ -1,7 +1,7 @@
 ---
 import { useTranslations } from "../i18n/utils";
 
-interface Props {
+export interface Props {
   lang: "es" | "en" | "ca" | "it";
 }
 
@@ -11,22 +11,23 @@ const t = useTranslations(lang);
 
 <section class="relative w-full h-screen overflow-hidden" id="hero-section">
   <!-- Video Background Container -->
-  <div class="absolute inset-0 z-0" id="hero-bg">
-    <!-- Placeholder for video - Replace src with your local file /videos/ocean.mp4 -->
+  <!-- Video Background Container -->
+  <div class="absolute inset-0 z-0 bg-transparent" id="hero-bg">
+    <!-- Coastal Dynamic: Light background with subtle wave texture -->
     <video
-      class="w-full h-full object-cover opacity-90"
+      class="w-full h-full object-cover opacity-40 mix-blend-multiply contrast-125 saturate-125"
       autoplay
       muted
       loop
       playsinline
     >
-      <source src="/videos/optimizated-videos/HeroWaves.mp4" type="video/mp4" />
+      <source src="/videos/optimized-videos/HeroWaves.mp4" type="video/mp4" />
       tu navegador no soporta videos HTML5.
     </video>
-    <!-- Overlay gradient for text readability -->
-    <div class="absolute inset-0 bg-black/20 mix-blend-overlay"></div>
+
+    <!-- Light Overlay for "Sunlight" effect -->
     <div
-      class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/30"
+      class="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-[#f5f5f4]/40"
     >
     </div>
   </div>
@@ -37,13 +38,15 @@ const t = useTranslations(lang);
     id="hero-content"
   >
     <h1
-      class="text-6xl md:text-8xl lg:text-9xl font-cursive text-white tracking-wider opacity-0 translate-y-10"
+      class="text-6xl md:text-8xl lg:text-[10rem] font-cursive text-white/10 opacity-0 translate-y-10"
+      style="text-shadow: 0 0 2px rgba(68, 64, 60, 0.6), 0 0 15px rgba(68, 64, 60, 0.2);"
       id="hero-title"
     >
       Lucia Puccio
     </h1>
     <p
-      class="mt-6 text-xl md:text-2xl font-light text-white/90 tracking-widest uppercase opacity-0 translate-y-10"
+      class="mt-4 text-3xl md:text-5xl font-cursive text-white/10 opacity-0 translate-y-10"
+      style="text-shadow: 0 0 1px rgba(68, 64, 60, 0.5), 0 0 5px rgba(68, 64, 60, 0.1);"
       id="hero-subtitle"
     >
       {t("hero.subtitle")}
@@ -54,8 +57,8 @@ const t = useTranslations(lang);
       class="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-0"
       id="scroll-indicator"
     >
-      <div class="w-[1px] h-16 bg-white/50 overflow-hidden">
-        <div class="w-full h-full bg-white animate-scroll-down"></div>
+      <div class="w-[1px] h-16 bg-stone-300 overflow-hidden">
+        <div class="w-full h-full bg-stone-600 animate-scroll-down"></div>
       </div>
     </div>
   </div>
