@@ -162,13 +162,13 @@ export default function Navbar({ lang = 'es' }: NavbarProps) {
                                         {!isCompact ? (
                                             <motion.span
                                                 key="text"
-                                                initial={{ opacity: 0, scale: 0.9 }}
+                                                initial={{ opacity: 0, scale: 0.95 }}
                                                 animate={{ opacity: 1, scale: 1 }}
-                                                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.1 } }}
-                                                className="font-light text-xs tracking-[0.25em] uppercase relative block"
+                                                exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.1 } }}
+                                                className="font-sans text-[10px] tracking-[0.4em] uppercase relative block"
                                             >
                                                 {t[item.key as keyof typeof t]}
-                                                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-stone-900 transition-all duration-300 group-hover:w-full"></span>
+                                                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-stone-900 transition-all duration-500 group-hover:w-full"></span>
                                             </motion.span>
                                         ) : (
                                             <motion.div
@@ -271,21 +271,23 @@ export default function Navbar({ lang = 'es' }: NavbarProps) {
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
-                            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                            initial={{ opacity: 0, y: -10, scale: 0.98 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                            className="absolute top-20 left-4 right-4 md:hidden bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl rounded-2xl overflow-hidden pointer-events-auto"
+                            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                            className="absolute top-24 left-4 right-4 md:hidden bg-coastal-white/95 backdrop-blur-3xl border border-white/50 shadow-2xl rounded-3xl overflow-hidden pointer-events-auto z-40"
                         >
-                            <div className="px-4 py-6 space-y-4 flex flex-col items-center">
+                            <div className="px-6 py-8 space-y-6 flex flex-col items-center">
                                 {navLinks.map((item) => (
                                     <a
                                         key={item.key}
                                         href={getLocalizedHref(item.href)}
                                         onClick={(e) => handleLinkClick(e, item.key, item.href)}
-                                        className="px-3 py-2 text-stone-600 hover:text-stone-900 font-light text-sm uppercase tracking-widest w-full text-center hover:bg-stone-50/50 rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2"
+                                        className="w-full text-center py-3 text-stone-700 hover:text-stone-900 font-serif italic text-2xl transition-all duration-300 border-b border-transparent hover:border-stone-200"
                                     >
-                                        <item.icon size={18} />
-                                        <span>{t[item.key as keyof typeof t]}</span>
+                                        <span className="flex items-center justify-center gap-3">
+                                            {/* Optional: <item.icon size={20} strokeWidth={1} className="opacity-70"/> */}
+                                            {t[item.key as keyof typeof t]}
+                                        </span>
                                     </a>
                                 ))}
                             </div>

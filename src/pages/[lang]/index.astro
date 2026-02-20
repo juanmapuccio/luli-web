@@ -45,14 +45,21 @@ const optimizedImages = await Promise.all(
     <Hero lang={lang as any} />
 
     <!-- Gallery Section -->
-    <section id="gallery" class="pt-[45rem] pb-[30rem] bg-transparent">
-      <div class="text-center mb-10" id="gallery-title-container">
+    <section
+      id="gallery"
+      class="pt-24 md:pt-[45rem] pb-24 md:pb-[30rem] bg-transparent"
+    >
+      <div class="text-center mb-24" id="gallery-title-container">
         <h2
-          class="text-4xl md:text-5xl font-serif text-coastal-stone-deep tracking-tight mb-4"
+          class="text-5xl md:text-7xl font-serif italic text-coastal-stone-deep tracking-tighter mb-6"
         >
           {t("gallery.title")}
         </h2>
-        <div class="w-20 h-[1px] bg-stone-400/30 mx-auto"></div>
+        <p
+          class="text-[10px] uppercase tracking-[0.6em] text-stone-400 font-sans"
+        >
+          {t("gallery.subtitle")}
+        </p>
       </div>
       <Gallery client:only="react" images={optimizedImages} />
       {

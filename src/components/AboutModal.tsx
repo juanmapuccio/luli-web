@@ -106,10 +106,10 @@ export default function AboutModal({ lang = 'es' }: AboutModalProps) {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.2 }}
                                 >
-                                    <h2 className="font-serif text-4xl md:text-5xl text-stone-800 mb-2 tracking-tight">
+                                    <h2 className="font-serif italic text-4xl md:text-6xl text-stone-900 mb-2 tracking-tighter">
                                         {content['about.title']}
                                     </h2>
-                                    <div className="w-12 h-[1px] bg-stone-300 mb-6"></div>
+                                    <div className="w-16 h-[1px] bg-stone-200 mb-8"></div>
                                 </motion.div>
 
                                 {/* Scrollable Text Area */}
@@ -140,7 +140,7 @@ export default function AboutModal({ lang = 'es' }: AboutModalProps) {
                                         Close
                                     </button>
 
-                                    <span className="font-cursive text-2xl text-stone-400 transform -rotate-2">
+                                    <span className="font-serif italic text-xl text-stone-400">
                                         Lucia Puccio
                                     </span>
                                 </div>

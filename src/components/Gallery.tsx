@@ -16,16 +16,16 @@ export default function Gallery({ images }: { images: string[] }) {
         ? images
         : Array.from({ length: 9 }).map((_, i) => `https://placehold.co/600x${400 + (i % 3) * 150}?text=Foto+${i}`);
 
-    const handleNext = (e: React.MouseEvent) => {
-        e.stopPropagation();
+    const handleNext = (e?: React.MouseEvent | any) => {
+        e?.stopPropagation();
         if (!selectedImage) return;
         const currentIndex = displayImages.indexOf(selectedImage);
         const nextIndex = (currentIndex + 1) % displayImages.length;
         setSelectedImage(displayImages[nextIndex]);
     };
 
-    const handlePrev = (e: React.MouseEvent) => {
-        e.stopPropagation();
+    const handlePrev = (e?: React.MouseEvent | any) => {
+        e?.stopPropagation();
         if (!selectedImage) return;
         const currentIndex = displayImages.indexOf(selectedImage);
         const prevIndex = (currentIndex - 1 + displayImages.length) % displayImages.length;
@@ -52,6 +52,12 @@ export default function Gallery({ images }: { images: string[] }) {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [selectedImage, displayImages]);
+
+    // Swipe Logic
+    const swipeConfidenceThreshold = 10000;
+    const swipePower = (offset: number, velocity: number) => {
+        return Math.abs(offset) * velocity;
+    };
 
     if (!mounted) return null;
 
@@ -128,16 +134,16 @@ export default function Gallery({ images }: { images: string[] }) {
                             </button>
 
                             <button
-                                className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-900 transition-colors pointer-events-auto p-4 hidden md:block"
+                                className="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 text-stone-200/50 hover:text-stone-900 transition-colors pointer-events-auto p-2"
                                 onClick={handlePrev}
                             >
-                                <ChevronLeft size={48} strokeWidth={1} />
+                                <ChevronLeft size={32} className="md:w-12 md:h-12" strokeWidth={1} />
                             </button>
                             <button
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-900 transition-colors pointer-events-auto p-4 hidden md:block"
+                                className="absolute right-2 md:right-8 top-1/2 -translate-y-1/2 text-stone-200/50 hover:text-stone-900 transition-colors pointer-events-auto p-2"
                                 onClick={handleNext}
                             >
-                                <ChevronRight size={48} strokeWidth={1} />
+                                <ChevronRight size={32} className="md:w-12 md:h-12" strokeWidth={1} />
                             </button>
                         </div>
 
@@ -147,13 +153,25 @@ export default function Gallery({ images }: { images: string[] }) {
                             <motion.img
                                 key={selectedImage}
                                 src={selectedImage}
-                                className="w-auto h-auto max-w-full max-h-[90vh] object-contain shadow-2xl rounded-sm pointer-events-auto cursor-default"
+                                className="w-auto h-auto max-w-full max-h-[85vh] md:max-h-[90vh] object-contain shadow-2xl rounded-sm pointer-events-auto cursor-grab active:cursor-grabbing"
                                 initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)", y: 20 }}
                                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95, filter: "blur(5px)", y: -20 }}
                                 transition={{
-                                    duration: 0.6,
-                                    ease: [0.16, 1, 0.3, 1], // Expert curve: smooth out
+                                    duration: 0.5,
+                                    ease: [0.16, 1, 0.3, 1],
+                                }}
+                                drag="x"
+                                dragConstraints={{ left: 0, right: 0 }}
+                                dragElastic={1}
+                                onDragEnd={(e, { offset, velocity }) => {
+                                    const swipe = swipePower(offset.x, velocity.x);
+
+                                    if (swipe < -swipeConfidenceThreshold) {
+                                        handleNext();
+                                    } else if (swipe > swipeConfidenceThreshold) {
+                                        handlePrev();
+                                    }
                                 }}
                             />
                         </div>

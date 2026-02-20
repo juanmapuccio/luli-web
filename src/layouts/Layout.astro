@@ -61,7 +61,7 @@ const socialImageURL = new URL(image, Astro.url);
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={socialImageURL} />
   </head>
-  <body>
+  <body class="overflow-x-hidden">
     <BackgroundSystem client:load />
     <slot />
 

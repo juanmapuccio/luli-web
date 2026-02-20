@@ -70,25 +70,25 @@ export default function ContactModal({ lang = 'es' }: ContactModalProps) {
                         className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden"
                     >
                         {/* Header */}
-                        <div className="flex justify-between items-center p-6 border-b border-stone-100 bg-stone-50/50">
-                            <h2 className="font-serif text-2xl text-stone-800 tracking-tight">
+                        <div className="flex justify-between items-center p-8 border-b border-stone-100">
+                            <h2 className="font-serif italic text-3xl md:text-5xl text-stone-900 tracking-tighter">
                                 {t["contact.title"]}
                             </h2>
                             <button
                                 onClick={() => isContactModalOpen.set(false)}
-                                className="text-stone-400 hover:text-stone-800 transition-colors p-1 rounded-full hover:bg-stone-200/50"
+                                className="text-stone-400 hover:text-stone-900 transition-colors p-2"
                             >
-                                <X size={20} />
+                                <X size={24} strokeWidth={1} />
                             </button>
                         </div>
 
                         {/* Form */}
-                        <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-4 max-h-[80vh] overflow-y-auto">
+                        <form onSubmit={handleSubmit} className="p-8 space-y-6 max-h-[80vh] overflow-y-auto custom-scrollbar">
 
                             {/* Name & Email Group */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-stone-500 ml-1">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-sans uppercase tracking-[0.3em] text-stone-400 ml-1">
                                         {t["contact.name"]} *
                                     </label>
                                     <input
@@ -97,12 +97,12 @@ export default function ContactModal({ lang = 'es' }: ContactModalProps) {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 text-stone-700 outline-none focus:ring-2 focus:ring-stone-400/20 focus:border-stone-400 transition-all font-light"
-                                        placeholder="Tu nombre"
+                                        className="w-full bg-stone-50/50 border-b border-stone-200 py-2 text-stone-700 outline-none focus:border-stone-900 transition-all font-sans text-sm"
+                                        placeholder="full name"
                                     />
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-stone-500 ml-1">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-sans uppercase tracking-[0.3em] text-stone-400 ml-1">
                                         {t["contact.email"]} *
                                     </label>
                                     <input
@@ -111,15 +111,15 @@ export default function ContactModal({ lang = 'es' }: ContactModalProps) {
                                         name="email"
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 text-stone-700 outline-none focus:ring-2 focus:ring-stone-400/20 focus:border-stone-400 transition-all font-light"
-                                        placeholder="tu@email.com"
+                                        className="w-full bg-stone-50/50 border-b border-stone-200 py-2 text-stone-700 outline-none focus:border-stone-900 transition-all font-sans text-sm"
+                                        placeholder="email address"
                                     />
                                 </div>
                             </div>
 
                             {/* Phone */}
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold uppercase tracking-widest text-stone-500 ml-1">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-sans uppercase tracking-[0.3em] text-stone-400 ml-1">
                                     {t["contact.phone"]} *
                                 </label>
                                 <input
@@ -128,15 +128,14 @@ export default function ContactModal({ lang = 'es' }: ContactModalProps) {
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleChange}
-                                    className="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 text-stone-700 outline-none focus:ring-2 focus:ring-stone-400/20 focus:border-stone-400 transition-all font-light"
-                                    placeholder="+34 ..."
+                                    className="w-full bg-stone-50/50 border-b border-stone-200 py-2 text-stone-700 outline-none focus:border-stone-900 transition-all font-sans text-sm"
+                                    placeholder="+00 (0) 000 000 000"
                                 />
                             </div>
 
-                            {/* Event Type & Hours */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-stone-500 ml-1">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-sans uppercase tracking-[0.3em] text-stone-400 ml-1">
                                         {t["contact.type"]}
                                     </label>
                                     <input
@@ -144,12 +143,12 @@ export default function ContactModal({ lang = 'es' }: ContactModalProps) {
                                         name="eventType"
                                         value={formData.eventType}
                                         onChange={handleChange}
-                                        className="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 text-stone-700 outline-none focus:ring-2 focus:ring-stone-400/20 focus:border-stone-400 transition-all font-light"
-                                        placeholder="Boda, Pareja..."
+                                        className="w-full bg-stone-50/50 border-b border-stone-200 py-2 text-stone-700 outline-none focus:border-stone-900 transition-all font-sans text-sm"
+                                        placeholder="wedding, personal..."
                                     />
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-stone-500 ml-1">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-sans uppercase tracking-[0.3em] text-stone-400 ml-1">
                                         {t["contact.hours"]}
                                     </label>
                                     <input
@@ -157,15 +156,14 @@ export default function ContactModal({ lang = 'es' }: ContactModalProps) {
                                         name="hours"
                                         value={formData.hours}
                                         onChange={handleChange}
-                                        className="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 text-stone-700 outline-none focus:ring-2 focus:ring-stone-400/20 focus:border-stone-400 transition-all font-light"
-                                        placeholder="Ej: 4 horas"
+                                        className="w-full bg-stone-50/50 border-b border-stone-200 py-2 text-stone-700 outline-none focus:border-stone-900 transition-all font-sans text-sm"
+                                        placeholder="estimated time"
                                     />
                                 </div>
                             </div>
 
-                            {/* Location */}
-                            <div className="space-y-1">
-                                <label className="text-xs font-bold uppercase tracking-widest text-stone-500 ml-1">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-sans uppercase tracking-[0.3em] text-stone-400 ml-1">
                                     {t["contact.location"]}
                                 </label>
                                 <input
@@ -173,20 +171,19 @@ export default function ContactModal({ lang = 'es' }: ContactModalProps) {
                                     name="location"
                                     value={formData.location}
                                     onChange={handleChange}
-                                    className="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 text-stone-700 outline-none focus:ring-2 focus:ring-stone-400/20 focus:border-stone-400 transition-all font-light"
-                                    placeholder="Ciudad, Finca..."
+                                    className="w-full bg-stone-50/50 border-b border-stone-200 py-2 text-stone-700 outline-none focus:border-stone-900 transition-all font-sans text-sm"
+                                    placeholder="preferred location"
                                 />
                             </div>
 
-                            {/* Submit Button */}
                             <motion.button
-                                whileHover={{ scale: 1.01 }}
+                                whileHover={{ y: -2 }}
                                 whileTap={{ scale: 0.98 }}
                                 type="submit"
-                                className="w-full mt-4 bg-stone-800 text-stone-100 font-bold tracking-widest uppercase text-xs py-4 rounded-lg shadow-lg hover:bg-stone-700 transition-colors flex items-center justify-center gap-2"
+                                className="w-full mt-6 bg-stone-900 text-white font-sans text-[10px] font-bold tracking-[0.5em] uppercase py-5 transition-all flex items-center justify-center gap-3 hover:bg-stone-800"
                             >
                                 <span>{t["contact.send"]}</span>
-                                <Send size={14} />
+                                <Send size={12} strokeWidth={1.5} />
                             </motion.button>
 
                             <p className="text-[10px] text-center text-stone-400 mt-2">

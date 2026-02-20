@@ -1,8 +1,9 @@
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { FaWhatsapp, FaInstagram } from 'react-icons/fa';
-import { Mail, MapPin } from 'lucide-react';
+import { Mail, MapPin, ArrowUp } from 'lucide-react';
 import { ui } from '../i18n/ui';
 import { isContactModalOpen } from '../store/modalStore';
+import { useEffect, useState } from 'react';
 
 interface FooterProps {
     lang?: keyof typeof ui;
@@ -10,6 +11,19 @@ interface FooterProps {
 
 export default function Footer({ lang = 'es' }: FooterProps) {
     const t = ui[lang];
+    const [showTopBtn, setShowTopBtn] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 400) {
+                setShowTopBtn(true);
+            } else {
+                setShowTopBtn(false);
+            }
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const socialLinks = [
         {
@@ -27,7 +41,7 @@ export default function Footer({ lang = 'es' }: FooterProps) {
     ];
 
     return (
-        <footer id="contact" className="bg-[#e7e5e4]/90 text-stone-700 py-20 relative overflow-hidden">
+        <footer id="contact" className="bg-[#e7e5e4]/90 text-stone-700 pt-16 pb-8 relative overflow-hidden border-t border-stone-200/50">
             {/* Video Background - Soft Light for Coastal Feel */}
             <video
                 className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply pointer-events-none grayscale-0"
@@ -45,86 +59,68 @@ export default function Footer({ lang = 'es' }: FooterProps) {
             {/* Noise Texture */}
             <div className="absolute inset-0 opacity-30 bg-noise pointer-events-none mix-blend-soft-light"></div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center space-y-10">
+            {/* Content Container - Refined Editorial Layout */}
+            <div className="w-full h-full flex flex-col relative z-10 px-6 pt-16 pb-8 md:pt-24 md:pb-12">
 
-                {/* Brand Section - Huge Editorial Typography */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                    className="space-y-6"
-                >
-                    <h2
-                        className="font-cursive text-7xl md:text-9xl text-white/10 tracking-normal leading-none relative"
-                        style={{ textShadow: "0 0 2px rgba(68, 64, 60, 0.6), 0 0 15px rgba(68, 64, 60, 0.2)" }}
-                    >
-                        <span className="relative z-10">Lucia Puccio</span>
+                {/* 1. Main Interaction Area (Centered) */}
+                <div className="flex-grow flex flex-col items-center justify-center text-center">
+
+                    {/* Signature - Dominant Hierarchy */}
+                    <h2 className="text-[13vw] md:text-[9vw] leading-none font-serif italic text-white select-none whitespace-nowrap pointer-events-none drop-shadow-[0_5px_15px_rgba(0,0,0,0.4)] mb-2 md:mb-6">
+                        Lucia Puccio
                     </h2>
-                    <p className="font-serif italic text-stone-600 text-base md:text-lg tracking-[0.05em] max-w-lg mx-auto leading-relaxed opacity-90">
-                        {t["about.quote"]}
+
+                    {/* Tagline - Secondary Hierarchy */}
+                    <p className="font-serif italic text-lg md:text-2xl font-light tracking-wide text-white/90 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] max-w-xl mx-auto leading-relaxed mb-10 md:mb-16">
+                        {t["footer.poetic_tagline"] || "Visual poetry written with light and soul."}
                     </p>
-                </motion.div>
 
-                {/* Minimalist Divider */}
-                <div className="w-20 h-px bg-stone-300 opacity-40"></div>
-
-                {/* Contact & Socials - Clean Row */}
-                <div className="flex items-center justify-center space-x-12 w-full">
-
-                    {/* Email Icon Trigger */}
-                    <motion.button
-                        onClick={() => isContactModalOpen.set(true)}
-                        className="p-4 bg-white/40 rounded-full backdrop-blur-sm border border-white/40 shadow-sm hover:shadow-md text-stone-600 transition-all duration-300 transform hover:scale-110 hover:text-stone-900"
-                        whileHover={{ y: -5 }}
-                        whileTap={{ scale: 0.95 }}
-                        aria-label="Send Email"
-                    >
-                        <Mail size={32} />
-                    </motion.button>
-
-                    {/* Social Icons */}
-                    {socialLinks.map((social) => (
-                        <motion.a
-                            key={social.name}
-                            href={social.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`text-stone-600 transition-all duration-300 transform hover:scale-110 hover:text-stone-900 ${social.color} p-4 bg-white/40 rounded-full backdrop-blur-sm border border-white/40 shadow-sm hover:shadow-md`}
-                            whileHover={{ y: -5 }}
-                            whileTap={{ scale: 0.95 }}
+                    {/* Social Icons - Tertiary Hierarchy (The Bridge) */}
+                    <div className="flex justify-center items-center gap-8 md:gap-12 mb-12">
+                        <motion.button
+                            onClick={() => isContactModalOpen.set(true)}
+                            className="text-white hover:text-white/80 transition-all duration-300 drop-shadow-md"
+                            whileHover={{ scale: 1.1, translateY: -2 }}
+                            aria-label="Email"
                         >
-                            <social.icon size={32} />
-                            <span className="sr-only">{social.name}</span>
-                        </motion.a>
-                    ))}
-                </div>
-
-
-
-                {/* Bottom Bar - Absolute Center */}
-                <div className="pt-8 w-full flex flex-col md:flex-row justify-center items-center text-[12px] text-stone-400 font-normal uppercase tracking-[0.15em] space-y-4 md:space-y-0 md:space-x-8">
-                    <p>&copy; {new Date().getFullYear()} Lucia Puccio.</p>
-                    <span className="hidden md:inline text-stone-200">•</span>
-                    <p>{t["footer.rights"]}</p>
-                    <span className="hidden md:inline text-stone-200">•</span>
-                    <div className="flex items-center space-x-1.5">
-                        <MapPin size={10} className="text-stone-300" />
-                        <p>{t["footer.location"]}</p>
+                            <Mail size={28} strokeWidth={1.5} />
+                        </motion.button>
+                        {socialLinks.map((social) => (
+                            <motion.a
+                                key={social.name}
+                                href={social.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`text-white hover:text-white/80 transition-all duration-300 drop-shadow-md`}
+                                whileHover={{ scale: 1.1, translateY: -2 }}
+                                aria-label={social.name}
+                            >
+                                <social.icon size={28} />
+                            </motion.a>
+                        ))}
                     </div>
-
-                    {/* Minimal Go to Top */}
-                    <button
-                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                        className="fixed bottom-8 right-8 p-3 bg-white/50 backdrop-blur-md rounded-full shadow-lg border border-white/40 text-stone-500 hover:text-stone-900 transition-all duration-500 hover:-translate-y-1 z-50 group"
-                        aria-label="Back to Top"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="m18 15-6-6-6 6" />
-                        </svg>
-                    </button>
                 </div>
-            </div>
+
+                {/* 2. Bottom Information Bar (Quaternary Hierarchy) */}
+                <div className="w-full border-t border-white/20 pt-6 flex flex-col md:flex-row justify-center items-center text-white/60 text-[10px] md:text-xs tracking-[0.2em] font-sans uppercase gap-4 md:gap-6 mt-auto">
+                    <span>Barcelona, España</span>
+                    <span className="hidden md:inline opacity-40">|</span>
+                    <span>&copy; {new Date().getFullYear()} All Rights Reserved.</span>
+                </div>
+            </div>    {/* Functional Go to Top Button */}
+            {showTopBtn && (
+                <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    className="fixed bottom-8 right-8 p-3 bg-stone-900/80 text-white backdrop-blur-md rounded-full shadow-lg hover:bg-stone-800 transition-all duration-300 z-50 group border border-white/10"
+                    aria-label="Back to Top"
+                    whileHover={{ y: -2 }}
+                >
+                    <ArrowUp size={20} />
+                </motion.button>
+            )}
         </footer>
     );
 }

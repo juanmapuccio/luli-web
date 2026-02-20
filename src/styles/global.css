@@ -1,6 +1,7 @@
 /* Local Fonts via @fontsource */
 @import '@fontsource/inter';
 @import '@fontsource/playfair-display';
+@import '@fontsource/bodoni-moda';
 @import '@fontsource/allura';
 
 @tailwind base;

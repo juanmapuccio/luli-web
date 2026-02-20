@@ -19,7 +19,7 @@ export default {
         "deep-navy": "#082f49",
       },
       fontFamily: {
-        serif: ['"Playfair Display"', "serif"],
+        serif: ['"Bodoni Moda"', '"Playfair Display"', "serif"],
         sans: ['"Inter"', "sans-serif"],
         cursive: ['"Allura"', "cursive"],
       },
