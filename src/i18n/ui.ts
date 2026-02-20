@@ -30,6 +30,8 @@ export const ui = {
         "contact.hours": "¿Cuántas horas?",
         "contact.location": "Lugar (o a convenir)",
         "contact.send": "Enviar Mensaje",
+        "seo.title.default": "Lucía Puccio | Fotografía",
+        "seo.description.default": "Portafolio de fotografía de Lucía Puccio. Capturando momentos únicos con luz natural y estilo costero.",
     },
     en: {
         "nav.gallery": "Gallery",
@@ -53,6 +55,8 @@ export const ui = {
         "contact.hours": "How many hours?",
         "contact.location": "Location (or TBD)",
         "contact.send": "Send Message",
+        "seo.title.default": "Lucía Puccio | Photography",
+        "seo.description.default": "Photography portfolio by Lucía Puccio. Capturing unique moments with natural light and coastal style.",
     },
     ca: {
         "nav.gallery": "Galeria",
@@ -76,6 +80,8 @@ export const ui = {
         "contact.hours": "Quantes hores?",
         "contact.location": "Lloc (o a convenir)",
         "contact.send": "Enviar Missatge",
+        "seo.title.default": "Lucía Puccio | Fotografia",
+        "seo.description.default": "Portafoli de fotografia de Lucía Puccio. Capturant moments únics amb llum natural i estil costaner.",
     },
     it: {
         "nav.gallery": "Galleria",
@@ -99,5 +105,7 @@ export const ui = {
         "contact.hours": "Quante ore?",
         "contact.location": "Luogo (o da concordare)",
         "contact.send": "Invia Messaggio",
+        "seo.title.default": "Lucía Puccio | Fotografia",
+        "seo.description.default": "Portfolio fotografico di Lucía Puccio. Catturando momenti unici con luce naturale e stile costiero.",
     },
 } as const;

@@ -3,20 +3,24 @@ import "../styles/global.css";
 import AboutModal from "../components/AboutModal.tsx";
 import BackgroundSystem from "../components/BackgroundSystem.tsx";
 import { defaultLang, ui } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
 
 export interface Props {
-  title: string;
+  title?: string;
   description?: string;
   image?: string;
   lang?: keyof typeof ui;
 }
 
 const {
-  title,
-  description = "Portafolio de fotografía de Lucía Puccio. Capturando momentos únicos con luz natural y estilo costero.",
-  image = "/images/profile-img/luciapuccioprofile.jpeg", // Default share image
   lang = defaultLang,
+  image = "/images/profile-img/luciapuccioprofile.jpeg",
 } = Astro.props;
+
+const t = useTranslations(lang);
+
+const title = Astro.props.title || t("seo.title.default");
+const description = Astro.props.description || t("seo.description.default");
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const socialImageURL = new URL(image, Astro.url);
