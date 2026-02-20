@@ -43,7 +43,7 @@ export const ui = {
         "gallery.subtitle": "Selección Curada",
         "events.title": "Workshops & Eventos",
         "events.subtitle": "DESCUBRE LAS PRÓXIMAS FECHAS",
-        "events.cta": "Ver más información",
+        "events.cta": "+info",
         "nav.events": "Eventos"
     },
     en: {
@@ -81,7 +81,7 @@ export const ui = {
         "seo.description.default": "Photography portfolio by Lucía Puccio. Capturing unique moments with natural light and coastal style.",
         "events.title": "Workshops & Events",
         "events.subtitle": "DISCOVER UPCOMING DATES",
-        "events.cta": "View more information",
+        "events.cta": "+info",
         "nav.events": "Events"
     },
     ca: {
@@ -119,7 +119,7 @@ export const ui = {
         "seo.description.default": "Portafoli de fotografia de Lucía Puccio. Capturant moments únics amb llum natural i estil costaner.",
         "events.title": "Workshops & Esdeveniments",
         "events.subtitle": "DESCOBREIX LES PROPERES DATES",
-        "events.cta": "Veure més informació",
+        "events.cta": "+info",
         "nav.events": "Esdeveniments"
     },
     it: {
@@ -157,7 +157,7 @@ export const ui = {
         "seo.description.default": "Portfolio fotografico di Lucía Puccio. Catturando momenti unici con luce naturale e stile costiero.",
         "events.title": "Workshops & Eventi",
         "events.subtitle": "SCOPRI LE PROSSIME DATE",
-        "events.cta": "Vedi maggiori informazioni",
+        "events.cta": "+info",
         "nav.events": "Eventi"
     },
 } as const;

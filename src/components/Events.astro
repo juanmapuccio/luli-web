@@ -1,7 +1,9 @@
 ---
-import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import { useTranslations } from "../i18n/utils";
+
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
 interface Props {
   lang: string;
@@ -10,11 +12,13 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang as any);
 
-const events = await getCollection("events");
-// Sort by date, newest first or upcoming first
-const sortedEvents = events.sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
+const allEvents = await getCollection("events");
+const sortedEvents = allEvents
+  .filter((event: CollectionEntry<"events">) => event.data.isPublished)
+  .sort(
+    (a: CollectionEntry<"events">, b: CollectionEntry<"events">) =>
+      b.data.date.getTime() - a.data.date.getTime(),
+  );
 ---
 
 <section id="events" class="py-24 bg-stone-50">
@@ -44,7 +48,10 @@ const sortedEvents = events.sort(
               <article class="bg-white rounded-sm shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
                 <div class="aspect-[4/3] w-full overflow-hidden relative bg-stone-100">
                   <Image
-                    src={event.data.coverImage}
+                    src={
+                      event.data.coverImage ||
+                      "https://placehold.co/600x450?text=Workshop"
+                    }
                     alt={event.data.title}
                     width={600}
                     height={450}
@@ -66,14 +73,14 @@ const sortedEvents = events.sort(
                     <Content />
                   </div>
 
-                  {event.data.externalLink && (
+                  {event.data.paymentLink && (
                     <a
-                      href={event.data.externalLink}
+                      href={event.data.paymentLink}
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center text-xs tracking-widest uppercase border-b border-coastal-blue-light text-coastal-blue-deep hover:text-coastal-blue-light transition-colors pb-1"
                     >
-                      {t("events.cta") || "Ver más información"}
+                      {t("events.cta") || "+info"}
                     </a>
                   )}
                 </div>

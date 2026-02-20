@@ -63,22 +63,13 @@ export default function Gallery({ images }: { images: string[] }) {
 
     return (
         <div className="container mx-auto px-4 min-h-screen pb-20" id="gallery">
-            {/* Editorial Mosaic Layout - Bento Grid Style */}
-            <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[300px] gap-6">
+            {/* Masonry Layout - CSS Columns */}
+            <div className="columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6">
                 {displayImages.map((src, index) => {
-                    // Editorial Pattern for 3-column grid
-                    // Loop every 9 items
-                    const i = index % 9;
-                    let spanClass = "col-span-1 row-span-1"; // Default
-
-                    if (i === 0) spanClass = "md:col-span-2 md:row-span-2"; // Big Feature
-                    else if (i === 6) spanClass = "md:row-span-2"; // Tall Portrait
-                    else if (i === 7 || i === 8) spanClass = "md:col-span-2"; // Wide Landscape
-
                     return (
                         <motion.div
                             key={`gallery-item-container-${src}`}
-                            className={`relative group cursor-pointer ${spanClass}`}
+                            className="relative group cursor-pointer break-inside-avoid"
                             onClick={() => setSelectedImage(src)}
                             onMouseEnter={() => setHoveredIndex(index)}
                             onMouseLeave={() => setHoveredIndex(null)}

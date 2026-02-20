@@ -5,31 +5,15 @@ import Gallery from "../components/Gallery";
 import Footer from "../components/Footer";
 import Hero from "../components/Hero.astro";
 import Events from "../components/Events.astro";
-import { getImage } from "astro:assets";
-import { getCollection } from "astro:content";
+import { getImagesFromFolder } from "../utils/cloudinary";
 import { useTranslations } from "../i18n/utils";
 
 const lang = "es";
 const t = useTranslations(lang);
 
-// Fetch gallery collection
-const galleryEntries = await getCollection("gallery");
-const sortedGallery = galleryEntries.sort(
-  (a, b) => a.data.order - b.data.order,
-);
-
-// Process images to get optimized URLs
-const optimizedImages = await Promise.all(
-  sortedGallery.map(async (entry) => {
-    const optimized = await getImage({
-      src: entry.data.image,
-      width: 1200,
-      quality: 90,
-      format: "webp",
-    });
-    return optimized.src;
-  }),
-);
+// Fetch gallery from Cloudinary
+const cloudinaryImages = await getImagesFromFolder("luli-web/gallery");
+const optimizedImageUrls = cloudinaryImages.map((img) => img.secure_url);
 ---
 
 <Layout title="Lucia Puccio | Fotografía" lang={lang}>
@@ -55,9 +39,9 @@ const optimizedImages = await Promise.all(
           {t("gallery.subtitle")}
         </p>
       </div>
-      <Gallery client:only="react" images={optimizedImages.slice(0, -1)} />
+      <Gallery client:only="react" images={optimizedImageUrls} />
       {
-        optimizedImages.length === 0 && (
+        optimizedImageUrls.length === 0 && (
           <p class="text-center text-stone-500">{t("gallery.empty")}</p>
         )
       }
