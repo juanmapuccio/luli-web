@@ -5,10 +5,10 @@ from moviepy import VideoFileClip
 
 # Configuración de rutas
 BASE_DIR = Path(__file__).parent.parent
-INPUT_DIR = BASE_DIR / "public" / "videos"
-# Output directory requested by user (keeping typo if intended, or standardizing)
-# User asked for "optimizated-videos", so let's use that.
-OUTPUT_DIR = INPUT_DIR / "optimizated-videos"
+# Source from the current location of the videos (which are likely AV1)
+INPUT_DIR = BASE_DIR / "public" / "videos" / "optimized-videos"
+# Output to a temporary folder first to avoid read/write conflicts
+OUTPUT_DIR = INPUT_DIR / "temp_h264"
 
 # Crear carpeta de salida si no existe
 if not OUTPUT_DIR.exists():
@@ -26,7 +26,9 @@ def optimize_video(input_path, output_filename=None):
     filename = output_filename if output_filename else input_path.name
     output_file = OUTPUT_DIR / filename
 
-    print(f"\n--- Optimizando con GPU (AV1): {input_path.name} -> {filename} ---")
+    print(
+        f"\n--- Transcodificando a H.264 (Universal): {input_path.name} -> {filename} ---"
+    )
 
     try:
         # Cargar clip
@@ -51,10 +53,12 @@ def optimize_video(input_path, output_filename=None):
         # Quitar audio (ahorra espacio y background videos no lo necesitan)
         clip = clip.without_audio()
 
-        # Escribir archivo usando NVENC AV1
+        # Escribir archivo usando NVENC H.264 (Compatible con iPhone/iOS)
         ffmpeg_params = [
             "-c:v",
-            "av1_nvenc",  # Codec GPU AV1
+            "h264_nvenc",  # Codec GPU H.264 (Universal compatibility)
+            "-profile:v",
+            "high",  # High profile for better quality
             "-b:v",
             f"{target_bitrate_kbps}k",  # Target Average Bitrate
             "-maxrate",
@@ -66,14 +70,19 @@ def optimize_video(input_path, output_filename=None):
             "-rc",
             "vbr",  # Variable Bitrate
             "-pix_fmt",
-            "yuv420p",  # Compatibility
+            "yuv420p",  # Essential for iOS/QuickTime compatibility
+            "-movflags",
+            "+faststart",  # Move web metadata to front for faster playback start
         ]
 
-        print("Iniciando codificación con NVENC...")
+        print("Iniciando codificación con NVENC H.264 (Universal)...")
 
+        # Note: MoviePy's write_videofile codec arg is for the wrapper,
+        # but we are passing specific ffmpeg_params.
+        # We set codec='h264_nvenc' explicitly.
         clip.write_videofile(
             str(output_file),
-            codec="av1_nvenc",
+            codec="h264_nvenc",
             audio=False,
             ffmpeg_params=ffmpeg_params,
         )
@@ -90,7 +99,7 @@ def optimize_video(input_path, output_filename=None):
 
     except Exception as e:
         print(f"Error procesando {filename}: {e}")
-        print("Asegúrate de tener una GPU NVIDIA RTX 40-series y drivers actualizados.")
+        # print("Asegúrate de tener una GPU NVIDIA RTX 40-series y drivers actualizados.")
 
 
 if __name__ == "__main__":
@@ -98,17 +107,24 @@ if __name__ == "__main__":
     # { "input_filename": "output_filename" }
     # Si output_filename es None, se usa el mismo nombre
     target_files = {
-        "Creación_de_Video_Animado_de_Arena.mp4": "AboutSand.mp4",
-        # "AboutWaves.mp4": None,
-        # "FooterWaves.mp4": None,
-        # "HeroWaves.mp4": None
+        "AboutSand.mp4": "AboutSand.mp4",
+        "HeroWaves.mp4": "HeroWaves.mp4",
+        # "AboutWaves.mp4": "AboutWaves.mp4", # Not found in list_dir output
+        "FooterWaves.mp4": "FooterWaves.mp4",
     }
 
-    print(f"Procesando {len(target_files)} video(s)...")
+    print(f"Procesando {len(target_files)} video(s) de AV1 a H.264...")
 
     for input_name, output_name in target_files.items():
+        # Source is now the raw/original if possible, but we are looking in "public/videos"
+        # If the user overwrote originals, we might be re-encoding.
+        # Assuming original high-res files are in INPUT_DIR.
         path = INPUT_DIR / input_name
+
+        # Check if we should map output name or keep same
+        out_name = output_name if output_name else input_name
+
         if path.exists():
-            optimize_video(path, output_name)
+            optimize_video(path, out_name)
         else:
             print(f"No se encontró: {path}")

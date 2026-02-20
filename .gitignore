@@ -27,7 +27,8 @@ Thumbs.db
 *.swo
 
 # Agent/AI
-
+.agent/
+.Gemini/
 
 # Virtual Environments
 .venv/
