@@ -4,7 +4,9 @@ import Navbar from "../../components/Navbar";
 import Gallery from "../../components/Gallery";
 import Footer from "../../components/Footer";
 import Hero from "../../components/Hero.astro";
+import Events from "../../components/Events.astro";
 import { getImage } from "astro:assets";
+import { getCollection } from "astro:content";
 import { useTranslations } from "../../i18n/utils";
 
 export function getStaticPaths() {
@@ -18,17 +20,17 @@ export function getStaticPaths() {
 const { lang } = Astro.params;
 const t = useTranslations(lang as any);
 
-// Import all images from nature-img folder
-const images = import.meta.glob<{ default: ImageMetadata }>(
-  "../../images/nature-img/*.{jpeg,jpg,png,gif,webp}",
-  { eager: true },
+// Fetch gallery collection
+const galleryEntries = await getCollection("gallery");
+const sortedGallery = galleryEntries.sort(
+  (a, b) => a.data.order - b.data.order,
 );
 
 // Process images to get optimized URLs
 const optimizedImages = await Promise.all(
-  Object.values(images).map(async (image) => {
+  sortedGallery.map(async (entry) => {
     const optimized = await getImage({
-      src: image.default,
+      src: entry.data.image,
       width: 1200,
       quality: 90,
       format: "webp",
@@ -68,6 +70,8 @@ const optimizedImages = await Promise.all(
         )
       }
     </section>
+
+    <Events lang={lang as any} />
   </main>
 
   <Footer client:visible lang={lang as any} />

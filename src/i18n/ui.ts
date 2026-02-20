@@ -41,6 +41,10 @@ export const ui = {
         "seo.title.default": "Lucía Puccio | Fotografía",
         "seo.description.default": "Portafolio de fotografía de Lucía Puccio. Capturando momentos únicos con luz natural y estilo costero.",
         "gallery.subtitle": "Selección Curada",
+        "events.title": "Workshops & Eventos",
+        "events.subtitle": "DESCUBRE LAS PRÓXIMAS FECHAS",
+        "events.cta": "Ver más información",
+        "nav.events": "Eventos"
     },
     en: {
         "nav.home": "Home",
@@ -75,6 +79,10 @@ export const ui = {
         "contact.send": "Send Message",
         "seo.title.default": "Lucía Puccio | Photography",
         "seo.description.default": "Photography portfolio by Lucía Puccio. Capturing unique moments with natural light and coastal style.",
+        "events.title": "Workshops & Events",
+        "events.subtitle": "DISCOVER UPCOMING DATES",
+        "events.cta": "View more information",
+        "nav.events": "Events"
     },
     ca: {
         "nav.home": "Inici",
@@ -109,6 +117,10 @@ export const ui = {
         "contact.send": "Enviar Missatge",
         "seo.title.default": "Lucía Puccio | Fotografia",
         "seo.description.default": "Portafoli de fotografia de Lucía Puccio. Capturant moments únics amb llum natural i estil costaner.",
+        "events.title": "Workshops & Esdeveniments",
+        "events.subtitle": "DESCOBREIX LES PROPERES DATES",
+        "events.cta": "Veure més informació",
+        "nav.events": "Esdeveniments"
     },
     it: {
         "nav.home": "Home",
@@ -143,5 +155,9 @@ export const ui = {
         "contact.send": "Invia Messaggio",
         "seo.title.default": "Lucía Puccio | Fotografia",
         "seo.description.default": "Portfolio fotografico di Lucía Puccio. Catturando momenti unici con luce naturale e stile costiero.",
+        "events.title": "Workshops & Eventi",
+        "events.subtitle": "SCOPRI LE PROSSIME DATE",
+        "events.cta": "Vedi maggiori informazioni",
+        "nav.events": "Eventi"
     },
 } as const;

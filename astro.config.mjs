@@ -5,10 +5,11 @@ import tailwind from "@astrojs/tailwind";
 import vercel from "@astrojs/vercel";
 
 import sitemap from "@astrojs/sitemap";
+import keystatic from "@keystatic/astro";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [react(), tailwind(), sitemap()],
+  integrations: [react(), tailwind(), sitemap(), keystatic()],
   adapter: vercel(),
   i18n: {
     defaultLocale: "es",
