@@ -63,23 +63,32 @@ export default function Gallery({ images }: { images: string[] }) {
 
     return (
         <div className="container mx-auto px-4 min-h-screen pb-20" id="gallery">
-            {/* Masonry Layout - CSS Columns */}
-            <div className="columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6">
+            {/* Avant-Garde Editorial Mosaic Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 auto-rows-[160px] sm:auto-rows-[220px] lg:auto-rows-[280px] gap-2 sm:gap-4 md:gap-5 grid-flow-row-dense">
                 {displayImages.map((src, index) => {
+                    // Creative Dynamic Layout Algorithm
+                    const i = index % 12;
+                    let spanClasses = "col-span-1 row-span-1"; // Standard Square
+
+                    if (i === 0) spanClasses = "col-span-2 row-span-2"; // Macro anchor
+                    else if (i === 2 || i === 8) spanClasses = "col-span-1 row-span-2"; // Tall portrait
+                    else if (i === 4 || i === 10) spanClasses = "col-span-2 row-span-1"; // Wide cinema
+                    else if (i === 6) spanClasses = "col-span-2 row-span-2"; // Secondary anchor
+
                     return (
                         <motion.div
                             key={`gallery-item-container-${src}`}
-                            className="relative group cursor-pointer break-inside-avoid"
+                            className={`relative group cursor-pointer w-full h-full ${spanClasses}`}
                             onClick={() => setSelectedImage(src)}
                             onMouseEnter={() => setHoveredIndex(index)}
                             onMouseLeave={() => setHoveredIndex(null)}
-                            initial={{ opacity: 0, y: 100, scale: 0.9, filter: "blur(10px)" }}
+                            initial={{ opacity: 0, y: 50, scale: 0.95, filter: "blur(5px)" }}
                             whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
                             viewport={{ once: false, amount: 0.1 }}
                             transition={{
-                                duration: 1.2,
+                                duration: 0.8,
                                 ease: [0.16, 1, 0.3, 1],
-                                delay: (index % 3) * 0.1
+                                delay: (index % 4) * 0.1
                             }}
                         >
                             <div className="overflow-hidden rounded-sm relative w-full h-full transform transition-all duration-700 hover:shadow-2xl hover:shadow-coastal-blue-deep/10">
